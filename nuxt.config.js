@@ -68,13 +68,6 @@ export default {
         },
     },
 
-    // Deploy on GitHub Repo
-    /*
-    router: {
-        base: `/${pkg.name}/`,
-    },
-    */
-
     // Build Configuration: https://go.nuxtjs.dev/config-build
     build: {},
 }
