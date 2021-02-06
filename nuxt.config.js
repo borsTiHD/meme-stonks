@@ -1,5 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
-import pkg from 'package.json'
+import pkg from './package.json'
 
 export default {
     // Target: https://go.nuxtjs.dev/config-target
