@@ -3,3 +3,6 @@
 .vscode
 node_modules
 dist
+package.json
+.prettierrc.json
+jsconfig.json
