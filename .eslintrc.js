@@ -26,8 +26,24 @@ module.exports = {
                 SwitchCase: 1
             }
         ], // 4 spaces – for indentation
+        'prettier/prettier': [
+            'warn',
+            {
+                singleQuote: true,
+                semi: false,
+                trailingComma: 'none',
+                tabWidth: 4,
+                useTabs: false,
+                quoteProps: 'as-needed',
+                bracketSpacing: true,
+                jsxBracketSameLine: false,
+                arrowParens: 'always',
+                endOfLine: 'crlf',
+                embeddedLanguageFormatting: 'off'
+            }
+        ],
         'template-curly-spacing': 'off',
-        'max-len': ['off', {code: 120}],
+        'max-len': ['off', { code: 120 }],
         'no-console': 'off',
         'arrow-parens': ['error', 'always'],
         'space-before-function-paren': ['error', 'never'],
@@ -41,6 +57,21 @@ module.exports = {
         'no-underscore-dangle': 0,
 
         'vue/max-attributes-per-line': 'off',
-        'vue/singleline-html-element-content-newline': 0
+        'vue/singleline-html-element-content-newline': 'off',
+        'vue/multiline-html-element-content-newline': 'off',
+
+        'vue/html-indent': [
+            'error',
+            4,
+            {
+                attribute: 1,
+                baseIndent: 1,
+                closeBracket: 0,
+                alignAttributesVertically: true,
+                ignores: []
+            }
+        ],
+
+        'vue/no-v-html': 'off'
     }
 }
