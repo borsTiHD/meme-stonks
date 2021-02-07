@@ -31,13 +31,17 @@ export default {
     },
     async fetch() {
         const params = {
-            access_key: process.env.apiToken
+            access_key: process.env.apiToken,
+            limit: 1000
         }
 
-        this.$axios.get('http://api.marketstack.com/v1/tickers', { params })
+        const exchange = 'XSTU' // Börse Stuttgart
+        const url = `http://api.marketstack.com/v1/exchanges/${exchange}/tickers`
+        // const url = 'http://api.marketstack.com/v1/tickers'
+
+        this.$axios.get(url, { params })
             .then((response) => {
-                const stocks = response.data.data
-                console.log('Stocks:', stocks)
+                const stocks = response.data.data.tickers
                 this.setStocks(stocks)
             }).catch((error) => {
                 console.log(error)

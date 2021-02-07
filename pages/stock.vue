@@ -86,10 +86,11 @@ export default {
             return this.getCurrentStock
         },
         stockValue() {
-            if (!Array.isArray(this.stockData)) return [0]
-            return this.stockData.map((v) => {
-                if (typeof v.last !== 'number') return 0
-                return v.last
+            if (!Array.isArray(this.stockData.eod)) return [0]
+            return this.stockData.eod.map((v) => {
+                // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
+                // const midpoint = (v.high + v.low) / 2
+                return v.close
             })
         }
     },
@@ -114,10 +115,16 @@ export default {
 
             const params = {
                 access_key: process.env.apiToken,
-                symbols: this.getCurrentStock.symbol
+                exchange: 'XSTU', // Börse Stuttgart
+                sort: 'ASC',
+                limit: 1000
             }
 
-            this.$axios.get('http://api.marketstack.com/v1/intraday', { params })
+            const symbol = this.getCurrentStock.symbol
+            const url = `http://api.marketstack.com/v1/tickers/${symbol}/eod`
+            // const url = 'http://api.marketstack.com/v1/intraday'
+
+            this.$axios.get(url, { params })
                 .then((res) => {
                     const stockData = res.data.data
                     console.log('Stock Data:', stockData)
