@@ -1,6 +1,6 @@
 <template>
     <v-app dark>
-        <app-header />
+        <app-header :fetching="$fetchState.pending" />
         <app-sidebar />
         <app-settingsbar />
 
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 import AppHeader from '~/components/layout/Header.vue'
 import AppSidebar from '~/components/layout/Sidebar.vue'
 import AppSettingsbar from '~/components/layout/Settingsbar.vue'
@@ -26,6 +28,31 @@ export default {
         AppSidebar,
         AppSettingsbar,
         AppFooter
+    },
+    async fetch() {
+        const params = {
+            access_key: process.env.apiToken
+        }
+
+        console.log('fetching data')
+
+        this.$axios.get('http://api.marketstack.com/v1/tickers', { params })
+            .then((response) => {
+                const stocks = response.data.data
+                console.log('Stocks:', stocks)
+                this.setStocks(stocks)
+            }).catch((error) => {
+                console.log(error)
+            })
+    },
+    // call fetch only on client-side
+    fetchOnServer: false,
+    methods: {
+        ...mapActions({
+            setDrawer: 'layout/setDrawer',
+            setRightDrawer: 'layout/setRightDrawer',
+            setStocks: 'stock/setStocks'
+        })
     }
 }
 </script>
