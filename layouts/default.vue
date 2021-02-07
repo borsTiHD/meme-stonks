@@ -34,8 +34,6 @@ export default {
             access_key: process.env.apiToken
         }
 
-        console.log('fetching data')
-
         this.$axios.get('http://api.marketstack.com/v1/tickers', { params })
             .then((response) => {
                 const stocks = response.data.data
