@@ -4,7 +4,7 @@
   "tabWidth": 4,
   "useTabs": false,
   "quoteProps": "as-needed",
-  "trailingComma": "es5",
+  "trailingComma": "none",
   "bracketSpacing": false,
   "jsxBracketSameLine": false,
   "arrowParens": "always",

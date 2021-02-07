@@ -2,17 +2,17 @@ module.exports = {
     root: true,
     env: {
         browser: true,
-        node: true,
+        node: true
     },
     parserOptions: {
-        parser: 'babel-eslint',
+        parser: 'babel-eslint'
     },
     extends: [
         '@nuxtjs',
         'prettier',
         'prettier/vue',
         'plugin:prettier/recommended',
-        'plugin:nuxt/recommended',
+        'plugin:nuxt/recommended'
     ],
     plugins: ['prettier'],
     // add your custom rules here
@@ -23,8 +23,8 @@ module.exports = {
             {
                 outerIIFEBody: 1,
                 ignoredNodes: ['TemplateLiteral'],
-                SwitchCase: 1,
-            },
+                SwitchCase: 1
+            }
         ], // 4 spaces – for indentation
         'template-curly-spacing': 'off',
         'max-len': ['off', {code: 120}],
@@ -41,6 +41,6 @@ module.exports = {
         'no-underscore-dangle': 0,
 
         'vue/max-attributes-per-line': 'off',
-        'vue/singleline-html-element-content-newline': 0,
-    },
+        'vue/singleline-html-element-content-newline': 0
+    }
 }
