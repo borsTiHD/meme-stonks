@@ -27,7 +27,7 @@ module.exports = {
             },
         ], // 4 spaces – for indentation
         'template-curly-spacing': 'off',
-        'max-len': ['off', { code: 120 }],
+        'max-len': ['off', {code: 120}],
         'no-console': 'off',
         'arrow-parens': ['error', 'always'],
         'space-before-function-paren': ['error', 'never'],
