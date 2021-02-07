@@ -24,7 +24,7 @@ export default {
 
     // Enviroment Variables
     env: {
-        apiToken: process.env.API_TOKEN || false
+        apiToken: process.env.API_TOKEN || false // Lädt API_TOKEN aus '.env' Datei
     },
 
     // Global CSS: https://go.nuxtjs.dev/config-css
