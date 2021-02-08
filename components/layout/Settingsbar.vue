@@ -71,7 +71,6 @@ export default {
     computed: {
         ...mapGetters({
             getRightDrawer: 'layout/getRightDrawer',
-            getApiToken: 'getApiToken'
         }),
         rightDrawer: {
             get() {
@@ -86,6 +85,9 @@ export default {
         }
     },
     methods: {
+        ...mapGetters({
+            getApiToken: 'getApiToken'
+        }),
         ...mapActions({
             setRightDrawer: 'layout/setRightDrawer',
             setApiToken: 'setApiToken'
@@ -99,7 +101,7 @@ export default {
         },
         changeApiToken() {
             // Setzt aktuellen Token ins Inputfeld
-            this.token = this.getApiToken
+            this.token = this.getApiToken()
             this.dialog = true
         },
         setToken() {

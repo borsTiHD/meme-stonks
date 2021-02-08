@@ -41,10 +41,22 @@ export default {
             getStocks: 'stock/getStocks'
         }),
     },
+    watch: {
+        // Fetcht neue Daten wenn Token geändert wird
+        getApiToken() {
+            this.fetchData()
+        }
+    },
     created() {
         // Client Side
         if (process.client) {
-            this.fetchData()
+            // Ermittelt Token aus LocalStorage und speichert im Store
+            if (localStorage.getItem('apiToken')) {
+                this.setApiToken(localStorage.getItem('apiToken'))
+            }
+
+            // Fetcht Daten -> werden auch über Watch gefetcht.
+            // this.fetchData()
         }
     },
     methods: {
@@ -52,7 +64,6 @@ export default {
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
             setApiToken: 'setApiToken',
-            setApiTokenLocalStorage: 'setApiTokenLocalStorage',
             setStocks: 'stock/setStocks'
         }),
         fetchData() {
@@ -61,14 +72,13 @@ export default {
                 return false
             }
 
+            // Kein ApiToken -> KEIN FETCHING!
+            if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                return false
+            }
+
             // Loading State
             this.loadingData = true
-
-            // Setzt ApiToken aus Env
-            if (process.env.apiToken) {
-                this.setApiToken(process.env.apiToken)
-                // this.setApiTokenLocalStorage(process.env.apiToken)
-            }
 
             const params = {
                 access_key: this.getApiToken,
@@ -76,8 +86,6 @@ export default {
             }
 
             const url = `http://api.marketstack.com/v1/exchanges/${this.getExchange}/tickers`
-            // const url = 'http://api.marketstack.com/v1/tickers'
-
             this.$axios.get(url, { params })
                 .then((response) => {
                     const stocks = response.data.data.tickers
