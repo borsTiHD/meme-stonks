@@ -37,11 +37,16 @@ export default {
     computed: {
         ...mapGetters({
             getApiToken: 'getApiToken',
-            getExchange: 'stock/getExchange'
+            getExchange: 'stock/getExchange',
+            getStocks: 'stock/getStocks'
         }),
     },
     created() {
-        this.fetchData()
+        // Client Side
+        console.log('process.client', process.client)
+        if (process.client) {
+            this.fetchData()
+        }
     },
     methods: {
         ...mapActions({
@@ -52,6 +57,12 @@ export default {
             setStocks: 'stock/setStocks'
         }),
         fetchData() {
+            // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
+            if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
+                return false
+            }
+
+
             // Loading State
             this.loadingData = true
 
