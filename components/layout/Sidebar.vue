@@ -33,11 +33,6 @@ export default {
                     to: '/'
                 },
                 {
-                    icon: 'mdi-chart-bubble',
-                    title: 'Inspire',
-                    to: '/inspire'
-                },
-                {
                     icon: 'mdi-note-text-outline',
                     title: 'Stock',
                     to: '/stock'
