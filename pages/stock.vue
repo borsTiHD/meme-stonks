@@ -77,7 +77,9 @@ export default {
         ...mapGetters({
             getDrawer: 'layout/getDrawer',
             getRightDrawer: 'layout/getRightDrawer',
-            getCurrentStock: 'stock/getCurrentStock'
+            getApiToken: 'getApiToken',
+            getCurrentStock: 'stock/getCurrentStock',
+            getExchange: 'stock/getExchange'
         }),
         stock() {
             if (!this.getCurrentStock) {
@@ -114,8 +116,8 @@ export default {
             this.loadingData = true
 
             const params = {
-                access_key: process.env.apiToken,
-                exchange: 'XSTU', // Börse Stuttgart
+                access_key: this.getApiToken,
+                exchange: this.getExchange,
                 sort: 'ASC',
                 limit: 1000
             }

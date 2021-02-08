@@ -1,5 +1,6 @@
 // Root Store
 export const state = () => ({
+    exchange: 'XSTU', // Börse Stuttgart
     current: null,
     stocks: []
 })
@@ -31,5 +32,8 @@ export const getters = {
     },
     getStocks: (state) => {
         return state.stocks
+    },
+    getExchange: (state) => {
+        return state.exchange
     }
 }

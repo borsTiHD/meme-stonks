@@ -1,6 +1,6 @@
 <template>
     <v-app dark>
-        <app-header :fetching="$fetchState.pending" />
+        <app-header :fetching="loadingData" />
         <app-sidebar />
         <app-settingsbar />
 
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import AppHeader from '~/components/layout/Header.vue'
 import AppSidebar from '~/components/layout/Sidebar.vue'
@@ -29,32 +29,56 @@ export default {
         AppSettingsbar,
         AppFooter
     },
-    async fetch() {
-        const params = {
-            access_key: process.env.apiToken,
-            limit: 1000
+    data() {
+        return {
+            loadingData: false
         }
-
-        const exchange = 'XSTU' // Börse Stuttgart
-        const url = `http://api.marketstack.com/v1/exchanges/${exchange}/tickers`
-        // const url = 'http://api.marketstack.com/v1/tickers'
-
-        this.$axios.get(url, { params })
-            .then((response) => {
-                const stocks = response.data.data.tickers
-                this.setStocks(stocks)
-            }).catch((error) => {
-                console.log(error)
-            })
     },
-    // call fetch only on client-side
-    fetchOnServer: false,
+    computed: {
+        ...mapGetters({
+            getApiToken: 'getApiToken',
+            getExchange: 'stock/getExchange'
+        }),
+    },
+    created() {
+        this.fetchData()
+    },
     methods: {
         ...mapActions({
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
+            setApiToken: 'setApiToken',
+            setApiTokenLocalStorage: 'setApiTokenLocalStorage',
             setStocks: 'stock/setStocks'
-        })
+        }),
+        fetchData() {
+            // Loading State
+            this.loadingData = true
+
+            // Setzt ApiToken aus Env
+            if (process.env.apiToken) {
+                this.setApiToken(process.env.apiToken)
+                // this.setApiTokenLocalStorage(process.env.apiToken)
+            }
+
+            const params = {
+                access_key: this.getApiToken,
+                limit: 1000
+            }
+
+            const url = `http://api.marketstack.com/v1/exchanges/${this.getExchange}/tickers`
+            // const url = 'http://api.marketstack.com/v1/tickers'
+
+            this.$axios.get(url, { params })
+                .then((response) => {
+                    const stocks = response.data.data.tickers
+                    this.setStocks(stocks)
+                }).catch((error) => {
+                    console.log(error)
+                }).finally(() => {
+                    this.loadingData = false
+                })
+        }
     }
 }
 </script>
