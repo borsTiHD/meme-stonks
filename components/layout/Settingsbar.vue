@@ -1,5 +1,31 @@
 <template>
     <v-navigation-drawer v-model="rightDrawer" right temporary fixed>
+        <v-dialog v-model="dialog" width="500">
+            <v-card>
+                <v-card-title class="headline">Set Api Token</v-card-title>
+
+                <v-card-text>
+                    <v-text-field
+                        v-model="token"
+                        label="new token"
+                        :value="getApiToken"
+                        clearable
+                        single-line
+                        outlined
+                    ></v-text-field>
+                </v-card-text>
+
+                <v-divider />
+
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn color="primary" text @click="setToken">
+                        Set Token
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
         <v-list nav>
             <v-list-item>
                 <v-list-item-content>
@@ -9,12 +35,24 @@
                     <v-list-item-subtitle>Settings</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
-            <v-divider></v-divider>
+
+            <v-divider />
+
             <v-list-item @click="changeDarkMode">
                 <v-list-item-action>
-                    <v-icon>mdi-star</v-icon>
+                    <v-icon>
+                        {{ darkMode ? 'mdi-weather-sunny' : 'mdi-weather-night' }}
+                    </v-icon>
                 </v-list-item-action>
-                <v-list-item-title>{{ darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}</v-list-item-title>
+                <v-list-item-title>
+                    {{ darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
+                </v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="changeApiToken">
+                <v-list-item-action>
+                    <v-icon>mdi-key-variant</v-icon>
+                </v-list-item-action>
+                <v-list-item-title>Set Api Token</v-list-item-title>
             </v-list-item>
         </v-list>
     </v-navigation-drawer>
@@ -25,11 +63,15 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
     data() {
-        return {}
+        return {
+            dialog: false,
+            token: ''
+        }
     },
     computed: {
         ...mapGetters({
-            getRightDrawer: 'layout/getRightDrawer'
+            getRightDrawer: 'layout/getRightDrawer',
+            getApiToken: 'getApiToken'
         }),
         rightDrawer: {
             get() {
@@ -45,7 +87,8 @@ export default {
     },
     methods: {
         ...mapActions({
-            setRightDrawer: 'layout/setRightDrawer'
+            setRightDrawer: 'layout/setRightDrawer',
+            setApiToken: 'setApiToken'
         }),
         changeDarkMode() {
             if (this.darkMode) {
@@ -53,6 +96,15 @@ export default {
             } else {
                 this.$vuetify.theme.dark = true
             }
+        },
+        changeApiToken() {
+            // Setzt aktuellen Token ins Inputfeld
+            this.token = this.getApiToken
+            this.dialog = true
+        },
+        setToken() {
+            this.setApiToken(this.token)
+            this.dialog = false
         }
     }
 }

@@ -43,7 +43,6 @@ export default {
     },
     created() {
         // Client Side
-        console.log('process.client', process.client)
         if (process.client) {
             this.fetchData()
         }
@@ -61,7 +60,6 @@ export default {
             if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
                 return false
             }
-
 
             // Loading State
             this.loadingData = true
