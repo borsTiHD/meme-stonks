@@ -1,16 +1,20 @@
 <template>
-    <v-app dark>
+    <v-app v-resize="onResize" dark>
         <app-header :fetching="loadingData" />
         <app-sidebar />
         <app-settingsbar />
 
         <v-main>
-            <v-container>
+            <v-container
+                id="container"
+                fluid
+                :style="`height: ${containerHeight}px;`"
+            >
                 <nuxt />
             </v-container>
         </v-main>
 
-        <app-footer />
+        <app-footer id="footer" />
     </v-app>
 </template>
 
@@ -31,7 +35,8 @@ export default {
     },
     data() {
         return {
-            loadingData: false
+            loadingData: false,
+            containerHeight: 0
         }
     },
     computed: {
@@ -95,6 +100,27 @@ export default {
                 }).finally(() => {
                     this.loadingData = false
                 })
+        },
+        async onResize() {
+            // Setzt Container Höhe für Footer
+            const container = document.getElementById('container')
+            const footer = document.getElementById('footer')
+            this.containerHeight = window.innerHeight - this.getOffset(container).top - this.getOffset(footer).height
+        },
+        getOffset(el) {
+            /**
+             * getOffset() - Ermittelt die X/Y Position eines HTML Elements
+             *             -> // https://stackoverflow.com/a/28222246
+             * @param   {string}    el  -> HTML Element
+             * @returns {object}        -> Returns X/Y Koordinaten in 'px'
+             */
+            const rect = el.getBoundingClientRect()
+            return {
+                left: rect.left + window.scrollX,
+                top: rect.top + window.scrollY,
+                height: rect.height,
+                width: rect.width
+            }
         }
     }
 }
