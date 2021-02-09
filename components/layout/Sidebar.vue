@@ -1,6 +1,15 @@
 <template>
     <v-navigation-drawer v-model="drawer" clipped fixed app>
-        <v-list>
+        <v-list nav>
+            <v-list-item two-line :class="miniVariant && 'px-0'">
+                <v-list-item-avatar>🚀</v-list-item-avatar>
+                <v-list-item-content>
+                    <v-list-item-title>Application</v-list-item-title>
+                    <v-list-item-subtitle>to the moon</v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+
+            <v-divider class="pa-1" />
             <v-list-item
                 v-for="(item, i) in items"
                 :key="i"

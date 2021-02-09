@@ -29,7 +29,7 @@
         ></v-autocomplete>
         <v-spacer />
         <v-btn icon @click.stop="rightDrawer = !rightDrawer">
-            <v-icon>mdi-menu</v-icon>
+            <v-icon>mdi-cogs</v-icon>
         </v-btn>
     </v-app-bar>
 </template>
