@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col cols="12" md="6" class="d-flex flex-column">
+        <v-col cols="12" md="4" class="d-flex flex-column">
             <v-card class="flex d-flex flex-column">
                 <v-card-title class="headline">Details</v-card-title>
                 <v-card-text>
@@ -27,7 +27,7 @@
                 </v-card-text>
             </v-card>
         </v-col>
-        <v-col cols="12" md="6" class="d-flex flex-column">
+        <v-col cols="12" md="4" class="d-flex flex-column">
             <v-card class="flex d-flex flex-column">
                 <v-card-title class="headline">Object</v-card-title>
                 <v-card-text>
@@ -35,8 +35,12 @@
                 </v-card-text>
             </v-card>
         </v-col>
-        <v-col cols="12" class="d-flex flex-column">
-            <v-card class="flex d-flex flex-column" color="green" dark>
+        <v-col cols="12" md="4" class="d-flex flex-column">
+            <v-card
+                class="flex d-flex flex-column"
+                :color="stockPropertiesLastDays().color"
+                dark
+            >
                 <v-card-text>
                     <v-progress-linear
                         v-if="loadingData"
@@ -45,10 +49,9 @@
                     />
                     <v-sheet v-else color="rgba(0, 0, 0, .12)">
                         <v-sparkline
-                            :value="stockValue"
+                            :value="stockValueLastDays()"
                             line-width="1"
                             color="rgba(255, 255, 255, .7)"
-                            height="100"
                             stroke-linecap="round"
                             smooth
                         />
@@ -56,7 +59,52 @@
                 </v-card-text>
 
                 <v-card-text>
-                    <div class="display-1 font-weight-thin">Latest data</div>
+                    <v-row class="display-1 font-weight-thin">
+                        <v-col class="d-flex flex-sm-row">
+                            <span>Latest</span>
+                            <v-select
+                                v-model="days"
+                                :items="daysSelect"
+                                class="mx-3"
+                                width="0"
+                                hide-details
+                                autowidth
+                                dense
+                                solo
+                            />
+                            <span>days</span>
+                        </v-col>
+                        <v-col class="d-flex flex-sm-row justify-end">
+                            <v-icon
+                                large
+                                :color="stockPropertiesLastDays().color + ' darken-3'"
+                                class="align-self-center"
+                            >
+                                {{ stockPropertiesLastDays().icon }}
+                            </v-icon>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+            </v-card>
+        </v-col>
+        <v-col cols="12" class="d-flex flex-column">
+            <v-card class="flex d-flex flex-column">
+                <v-card-text>
+                    <v-progress-linear
+                        v-if="loadingData"
+                        indeterminate
+                        color="white"
+                    />
+                    <stock-line-chart
+                        v-else
+                        :chart-data="stockValue"
+                        :chart-labels="stockLabels"
+                        :line-color="chartColor"
+                    />
+                </v-card-text>
+
+                <v-card-text>
+                    <div class="display-1 font-weight-thin">Last Year</div>
                 </v-card-text>
             </v-card>
         </v-col>
@@ -65,12 +113,20 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import moment from 'moment'
+
+import StockLineChart from '~/components/charts/StockLineChart.vue'
 
 export default {
+    components: {
+        StockLineChart
+    },
     data() {
         return {
             stockData: null,
-            loadingData: false
+            loadingData: false,
+            daysSelect: [2, 7, 14, 30, 60],
+            days: 30
         }
     },
     computed: {
@@ -88,12 +144,36 @@ export default {
             return this.getCurrentStock
         },
         stockValue() {
-            if (!Array.isArray(this.stockData.eod)) return [0]
-            return this.stockData.eod.map((v) => {
-                // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
-                // const midpoint = (v.high + v.low) / 2
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return []
+            return data.map((v) => {
+                // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
                 return v.close
             })
+        },
+        stockLabels() {
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return []
+            return data.map((v) => {
+                // return v.date
+                return moment(v.date).format('YYYY.MM.DD')
+            })
+        },
+        chartColor() {
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return '#ffffffb3'
+
+            // Ermittelt Data
+            const length = data.length
+            const firstData = data[0]
+            const lastData = data[length-1]
+
+            // Vergleicht 'Opening' mit 'Closing' Data
+            if (firstData.open < lastData.close) {
+                return '#03fc62'
+            } else {
+                return '#cc2929'
+            }
         }
     },
     watch: {
@@ -136,6 +216,43 @@ export default {
                 }).finally(() => {
                     this.loadingData = false
                 })
+        },
+        stockValueLastDays() {
+            const limit = this.days
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return []
+            const length = data.length
+            return data.slice(length-limit, length).map((v) => {
+                // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
+                return v.close
+            })
+        },
+        stockLabelsLastDays() {
+            const limit = this.days
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return []
+            const length = data.length
+            return data.slice(length-limit, length).map((v) => {
+                // return v.date
+                return moment(v.date).format('YYYY.MM.DD')
+            })
+        },
+        stockPropertiesLastDays() {
+            const limit = this.days
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return { color: '', icon: 'mdi-arrow-left-right' }
+
+            // Ermittelt Data
+            const length = data.length
+            const firstData = data[length-limit]
+            const lastData = data[length-1]
+
+            // Vergleicht 'Opening' mit 'Closing' Data
+            if (firstData.open < lastData.close) {
+                return { color: 'green', icon: 'mdi-arrow-top-right' }
+            } else {
+                return { color: 'red', icon: 'mdi-arrow-bottom-right' }
+            }
         }
     }
 }

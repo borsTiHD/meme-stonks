@@ -1,7 +1,7 @@
 <template>
     <v-navigation-drawer v-model="drawer" clipped fixed app>
         <v-list nav>
-            <v-list-item two-line :class="miniVariant && 'px-0'">
+            <v-list-item two-line>
                 <v-list-item-avatar>🚀</v-list-item-avatar>
                 <v-list-item-content>
                     <v-list-item-title>Application</v-list-item-title>

@@ -1,6 +1,6 @@
 // Root Store
 export const state = () => ({
-    exchange: 'XSTU', // Börse Stuttgart
+    exchange: 'XFRA', // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse
     current: null,
     stocks: []
 })
