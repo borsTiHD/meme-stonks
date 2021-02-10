@@ -134,6 +134,7 @@ export default {
             getDrawer: 'layout/getDrawer',
             getRightDrawer: 'layout/getRightDrawer',
             getApiToken: 'getApiToken',
+            getBaseUrl: 'getBaseUrl',
             getCurrentStock: 'stock/getCurrentStock',
             getExchange: 'stock/getExchange'
         }),
@@ -203,7 +204,7 @@ export default {
             }
 
             const symbol = this.getCurrentStock.symbol
-            const url = `http://api.marketstack.com/v1/tickers/${symbol}/eod`
+            const url = `${this.getBaseUrl}/tickers/${symbol}/eod`
             // const url = 'http://api.marketstack.com/v1/intraday'
 
             this.$axios.get(url, { params })

@@ -42,8 +42,9 @@ export default {
     computed: {
         ...mapGetters({
             getApiToken: 'getApiToken',
+            getBaseUrl: 'getBaseUrl',
             getExchange: 'stock/getExchange',
-            getStocks: 'stock/getStocks'
+            getStocks: 'stock/getStocks',
         }),
     },
     watch: {
@@ -90,7 +91,7 @@ export default {
                 limit: 1000
             }
 
-            const url = `http://api.marketstack.com/v1/exchanges/${this.getExchange}/tickers`
+            const url = `${this.getBaseUrl}/exchanges/${this.getExchange}/tickers`
             this.$axios.get(url, { params })
                 .then((response) => {
                     const stocks = response.data.data.tickers

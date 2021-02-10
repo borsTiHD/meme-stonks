@@ -1,5 +1,6 @@
 // Root Store
 export const state = () => ({
+    baseUrl: 'http://api.marketstack.com/v1',
     apiToken: null
 })
 
@@ -23,6 +24,9 @@ export const actions = {
 
 // Getting computed data
 export const getters = {
+    getBaseUrl: (state) => {
+        return state.baseUrl
+    },
     getApiToken: (state) => {
         return state.apiToken
     }
