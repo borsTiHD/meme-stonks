@@ -11,7 +11,6 @@
             :disabled="fetching"
             :items="items"
             :search-input.sync="search"
-            cache-items
             clearable
             class="mx-4"
             flat

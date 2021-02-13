@@ -1,18 +1,21 @@
 // Root Store
 export const state = () => ({
-    exchange: 'XNAS', // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
-    exchangeDetails: null,
-    current: null,
+    currentExchange: null,
+    exchanges: [],
+    currentStock: null,
     stocks: []
 })
 
 // Sync functions for setting data
 export const mutations = {
-    setExchangeDetails: (state, payload) => {
-        state.exchangeDetails = payload
+    setExchange: (state, payload) => {
+        state.currentExchange = payload
+    },
+    setAllExchanges: (state, payload) => {
+        state.exchanges = payload
     },
     setCurrentStock: (state, payload) => {
-        state.current = payload
+        state.currentStock = payload
     },
     setStocks: (state, payload) => {
         state.stocks = payload
@@ -21,8 +24,11 @@ export const mutations = {
 
 // Async functions for setting data and calling mutations
 export const actions = {
-    setExchangeDetails: (vuexContext, payload) => {
-        vuexContext.commit('setExchangeDetails', payload)
+    setExchange: (vuexContext, payload) => {
+        vuexContext.commit('setExchange', payload)
+    },
+    setAllExchanges: (vuexContext, payload) => {
+        vuexContext.commit('setAllExchanges', payload)
     },
     setCurrentStock: (vuexContext, payload) => {
         vuexContext.commit('setCurrentStock', payload)
@@ -34,16 +40,16 @@ export const actions = {
 
 // Getting computed data
 export const getters = {
-    getExchangeDetails: (state) => {
-        return state.exchangeDetails
+    getExchange: (state) => {
+        return state.currentExchange
+    },
+    getAllExchanges: (state) => {
+        return state.exchanges
     },
     getCurrentStock: (state) => {
-        return state.current
+        return state.currentStock
     },
     getStocks: (state) => {
         return state.stocks
-    },
-    getExchange: (state) => {
-        return state.exchange
     }
 }

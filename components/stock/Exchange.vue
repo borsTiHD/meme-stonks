@@ -62,13 +62,13 @@ import { mapGetters } from 'vuex'
 export default {
     computed: {
         ...mapGetters({
-            getExchangeDetails: 'stock/getExchangeDetails'
+            getExchange: 'stock/getExchange'
         }),
         exchange() {
-            if (!this.getExchangeDetails) {
+            if (!this.getExchange) {
                 return { name: '', currency: { symbol: '', code: '' }, mic: '', country: '', timezone: { abbr_dst: '', timezone: '' }, website: '' }
             }
-            return this.getExchangeDetails
+            return this.getExchange
         }
     }
 }

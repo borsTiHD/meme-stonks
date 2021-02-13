@@ -32,7 +32,7 @@ export default {
     },
     data() {
         return {
-            stockData: null,
+            stockData: {},
             loadingData: false
         }
     },
@@ -47,45 +47,52 @@ export default {
     watch: {
         // Fetcht neue Daten wenn Stock geändert wird
         getCurrentStock() {
-            this.fetchData()
+            this.fetchStockData().catch(() => {
+                // console.error(err)
+                this.loadingData = false
+            })
         }
     },
-    created() {
-        this.fetchData()
-    },
     methods: {
-        fetchData() {
-            // Setzt alte Daten zurück
-            this.stockData = {}
+        fetchStockData() {
+            return new Promise((resolve, reject) => {
+                console.log('[App] -> Fetching Stock Data')
 
-            // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
-            if (!this.getCurrentStock) {
-                return false
-            }
+                // Setzt alte Daten zurück
+                this.stockData = {}
 
-            this.loadingData = true
+                // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
+                if (!this.getCurrentStock) {
+                    reject(new Error('No Stock Selected'))
+                }
 
-            const params = {
-                access_key: this.getApiToken,
-                exchange: this.getExchange,
-                sort: 'ASC',
-                limit: 1000
-            }
+                this.loadingData = true
 
-            const symbol = this.getCurrentStock.symbol
-            const url = `${this.getBaseUrl}/tickers/${symbol}/eod`
-            // const url = 'http://api.marketstack.com/v1/intraday'
+                const params = {
+                    access_key: this.getApiToken,
+                    exchange: this.getExchange.mic,
+                    sort: 'ASC',
+                    limit: 1000
+                }
 
-            this.$axios.get(url, { params })
-                .then((res) => {
-                    const stockData = res.data.data
-                    console.log('[APP] -> Stock Data:', stockData)
-                    this.stockData = stockData
-                }).catch((error) => {
-                    console.log(error)
-                }).finally(() => {
-                    this.loadingData = false
-                })
+                const symbol = this.getCurrentStock.symbol
+                const url = `${this.getBaseUrl}/tickers/${symbol}/eod`
+
+                this.$axios.get(url, { params })
+                    .then((res) => {
+                        const stockData = res.data.data
+                        console.log('[APP] -> Stock Data:', stockData)
+                        this.stockData = stockData
+                        this.loadingData = false
+                    }).catch((error) => {
+                        console.log(error)
+                        this.loadingData = false
+                        reject(error)
+                    }).finally(() => {
+                        this.loadingData = false
+                        resolve(true)
+                    })
+            })
         }
     }
 }

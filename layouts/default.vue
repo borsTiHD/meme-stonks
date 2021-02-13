@@ -39,15 +39,28 @@ export default {
         ...mapGetters({
             getApiToken: 'getApiToken',
             getBaseUrl: 'getBaseUrl',
+            getAllExchanges: 'stock/getAllExchanges',
             getExchange: 'stock/getExchange',
-            getStocks: 'stock/getStocks',
+            getStocks: 'stock/getStocks'
         }),
     },
     watch: {
-        // Fetcht neue Daten wenn Token geändert wird
-        getApiToken() {
-            this.fetchData()
-        }
+        async getApiToken() {
+            // Fetcht neue Daten wenn Token geändert wird
+            this.loadingData = true
+            await this.fetchExchanges().catch((err) => {
+                console.error(err)
+            })
+            this.loadingData = false
+        },
+        async getExchange() {
+            // Fetcht neue Daten wenn Exchange geändert wird
+            this.loadingData = true
+            await this.fetchStocks().catch((err) => {
+                console.error(err)
+            })
+            this.loadingData = false
+        },
     },
     created() {
         // Client Side
@@ -66,49 +79,100 @@ export default {
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
             setApiToken: 'setApiToken',
-            setExchangeDetails: 'stock/setExchangeDetails',
-            setStocks: 'stock/setStocks'
+            setAllExchanges: 'stock/setAllExchanges',
+            setExchange: 'stock/setExchange',
+            setStocks: 'stock/setStocks',
+            setCurrentStock: 'stock/setCurrentStock'
         }),
-        fetchData() {
-            // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
-            if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
-                return false
-            }
-
-            // Kein ApiToken -> KEIN FETCHING!
-            if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
-                return false
-            }
-
-            // Loading State
+        async fetchData() {
             this.loadingData = true
 
-            const params = {
-                access_key: this.getApiToken,
-                limit: 1000
-            }
+            // Fetcht verfügbare Börsen
+            await this.fetchExchanges().catch((err) => {
+                console.error(err)
+                this.loadingData = false
+                return false
+            })
 
-            // Ermittelt Verfügbare Stock eines Exchanges
-            const getStocks = `${this.getBaseUrl}/exchanges/${this.getExchange}/tickers`
-            this.$axios.get(getStocks, { params })
-                .then((response) => {
-                    const stocks = response.data.data.tickers
-                    this.setStocks(stocks)
-                }).catch((error) => {
-                    console.log(error)
-                }).finally(() => {
-                    this.loadingData = false
-                })
+            // Fetcht verfügbare Aktien
+            await this.fetchStocks().catch((err) => {
+                console.error(err)
+                this.loadingData = false
+                return false
+            })
 
-            // Ermittelt Exchange Details
-            const exchangeDetails = `${this.getBaseUrl}/exchanges/${this.getExchange}`
-            this.$axios.get(exchangeDetails, { params })
-                .then((response) => {
-                    const data = response.data
-                    this.setExchangeDetails(data)
-                }).catch((error) => {
-                    console.log(error)
-                })
+            this.loadingData = false
+        },
+        fetchStocks() {
+            return new Promise((resolve, reject) => {
+                console.log('[App] -> Fetching Stocks')
+
+                // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
+                if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
+                    reject(new Error('Data Exists'))
+                }
+
+                // Kein ApiToken -> KEIN FETCHING!
+                if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                    reject(new Error('No Api Token'))
+                }
+
+                const params = {
+                    access_key: this.getApiToken,
+                    limit: 1000
+                }
+
+                // Ermittelt Verfügbare Stock eines Exchanges
+                const url = `${this.getBaseUrl}/exchanges/${this.getExchange.mic}/tickers`
+                this.$axios.get(url, { params })
+                    .then((response) => {
+                        const data = response.data.data.tickers
+                        console.log('[App] -> All Stocks:', data)
+                        this.setStocks(data) // Setzt Stocks
+                        this.setCurrentStock(null) // Setzt aktive Aktie ggf. zurück
+                    }).catch((error) => {
+                        console.log(error)
+                        reject(error)
+                    }).finally(() => {
+                        resolve(true)
+                    })
+            })
+        },
+        async fetchExchanges() {
+            return new Promise((resolve, reject) => {
+                console.log('[App] -> Fetching Exchanges')
+
+                // Gibt es bereits Exchanges, brauchen die nicht erneut gefetcht werden
+                if (Array.isArray(this.getAllExchanges && this.getAllExchanges.length > 0)) {
+                    reject(new Error('Data Exists'))
+                }
+
+                // Kein ApiToken -> KEIN FETCHING!
+                if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                    reject(new Error('No Api Token'))
+                }
+
+                const params = {
+                    access_key: this.getApiToken,
+                    limit: 1000
+                }
+
+                // Ermittelt Alle Exchanges
+                const url = `${this.getBaseUrl}/exchanges`
+                this.$axios.get(url, { params })
+                    .then((response) => {
+                        const data = response.data.data
+                        console.log('[App] -> All Exchanges:', data)
+                        const defaultExchange = data.find((data) => data.acronym === 'XSTU') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
+                        this.setAllExchanges(data)
+                        this.setExchange(defaultExchange)
+                    }).catch((error) => {
+                        console.log(error)
+                        reject(error)
+                    }).finally(() => {
+                        resolve(true)
+                    })
+            })
         },
         async onResize() {
             // Setzt Container Höhe für Footer

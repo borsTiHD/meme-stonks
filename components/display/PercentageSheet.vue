@@ -44,10 +44,10 @@ export default {
     },
     computed: {
         ...mapGetters({
-            getExchangeDetails: 'stock/getExchangeDetails'
+            getExchange: 'stock/getExchange'
         }),
         currency() {
-            return this.getExchangeDetails?.currency?.symbol || ''
+            return this.getExchange?.currency?.symbol || ''
         }
     },
     methods: {
