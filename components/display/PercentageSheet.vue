@@ -13,7 +13,7 @@
                     {{ icon() }}
                 </v-icon>
                 <span :class="color() + '--text text--darken-3'" class="align-self-center">
-                    {{ showPercentage ? percentageIncrease()+' %' : valueIncrease()+' €' }}
+                    {{ showPercentage ? percentageIncrease()+' %' : valueIncrease()+' '+currency }}
                 </span>
             </v-sheet>
         </template>
@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     props: {
         openingValue: {
@@ -38,6 +40,14 @@ export default {
     data() {
         return {
             showPercentage: true
+        }
+    },
+    computed: {
+        ...mapGetters({
+            getExchangeDetails: 'stock/getExchangeDetails'
+        }),
+        currency() {
+            return this.getExchangeDetails?.currency?.symbol || ''
         }
     },
     methods: {

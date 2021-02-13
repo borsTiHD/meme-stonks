@@ -1,5 +1,6 @@
 <script>
 import { Line } from 'vue-chartjs'
+import { mapGetters } from 'vuex'
 
 export default {
     extends: Line,
@@ -66,12 +67,20 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters({
+            getExchangeDetails: 'stock/getExchangeDetails'
+        }),
+        currency() {
+            return this.getExchangeDetails?.currency?.symbol || ''
+        }
+    },
     mounted() {
         this.renderChart({
             labels: this.chartLabels,
             datasets: [
                 {
-                    label: '€',
+                    label: this.currency,
                     borderColor: this.lineColor,
                     borderWidth: 2,
                     pointBackgroundColor: 'transparent',
