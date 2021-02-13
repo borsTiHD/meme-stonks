@@ -27,7 +27,7 @@ export default {
     },
     props: {
         stockData: {
-            type: [Array, Object],
+            type: Object,
             required: true,
             default: () => {
                 return {}

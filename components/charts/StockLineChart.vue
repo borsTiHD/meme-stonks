@@ -57,6 +57,9 @@ export default {
                         ticks: {
                             autoSkip: true,
                             maxTicksLimit: 24
+                        },
+                        time: {
+                            unit: 'month'
                         }
                     }]
                 }
