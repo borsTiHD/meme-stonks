@@ -10,7 +10,7 @@
                 fluid
                 :style="`height: ${containerHeight}px;`"
             >
-                <nuxt />
+                <nuxt keep-alive />
             </v-container>
         </v-main>
 
