@@ -67,7 +67,7 @@ export default {
         exchange() {
             console.log('Exchange:', this.getExchangeDetails)
             if (!this.getExchangeDetails) {
-                return {}
+                return { name: '', currency: { symbol: '', code: '' }, mic: '', country: '', timezone: { abbr_dst: '', timezone: '' }, website: '' }
             }
             return this.getExchangeDetails
         }
