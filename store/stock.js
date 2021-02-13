@@ -25,6 +25,10 @@ export const mutations = {
 // Async functions for setting data and calling mutations
 export const actions = {
     setExchange: (vuexContext, payload) => {
+        // Speichert auf Clientseite die Börse zusätzlich im Localstorage
+        if (process.browser) {
+            localStorage.setItem('currentExchange', JSON.stringify(payload))
+        }
         vuexContext.commit('setExchange', payload)
     },
     setAllExchanges: (vuexContext, payload) => {

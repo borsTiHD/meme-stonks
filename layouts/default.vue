@@ -161,10 +161,17 @@ export default {
                 const url = `${this.getBaseUrl}/exchanges`
                 this.$axios.get(url, { params })
                     .then((response) => {
+                        // Setzt Exchange Data
                         const data = response.data.data
                         console.log('[App] -> All Exchanges:', data)
-                        const defaultExchange = data.find((data) => data.acronym === 'XSTU') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
                         this.setAllExchanges(data)
+
+                        // Setzt default Exchange falls vorhanden aus LocalStorage
+                        let defaultExchange = data.find((data) => data.acronym === 'XSTU') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
+                        if (process.client && localStorage.getItem('currentExchange')) {
+                            const localExchange = localStorage.getItem('currentExchange')
+                            defaultExchange = JSON.parse(localExchange)
+                        }
                         this.setExchange(defaultExchange)
                     }).catch((error) => {
                         console.log(error)
