@@ -99,7 +99,8 @@
                         v-else
                         :chart-data="stockValue"
                         :chart-labels="stockLabels"
-                        :line-color="chartColor"
+                        :line-color="chartColor.line"
+                        :bg-color="chartColor.bg"
                     />
                 </v-card-text>
 
@@ -162,7 +163,7 @@ export default {
         },
         chartColor() {
             const data = this.stockData?.eod
-            if (!Array.isArray(data)) return '#ffffffb3'
+            if (!Array.isArray(data)) return { line: '#ffffffb3', bg: '#FFFFFF1A' }
 
             // Ermittelt Data
             const length = data.length
@@ -171,9 +172,9 @@ export default {
 
             // Vergleicht 'Opening' mit 'Closing' Data
             if (firstData.open < lastData.close) {
-                return '#03fc62'
+                return { line: '#03fc62', bg: '#03fc621A' } // 'bg' ist 10% transparency
             } else {
-                return '#cc2929'
+                return { line: '#cc2929', bg: '#cc29291A' } // 'bg' ist 10% transparency
             }
         }
     },

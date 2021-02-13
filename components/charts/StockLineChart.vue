@@ -17,6 +17,11 @@ export default {
             type: String,
             required: false,
             default: '#ffffffb3'
+        },
+        bgColor: {
+            type: String,
+            required: false,
+            default: 'rgba(0, 0, 0, 0.2)'
         }
     },
     data() {
@@ -68,7 +73,7 @@ export default {
                     borderWidth: 2,
                     pointBackgroundColor: 'transparent',
                     pointBorderColor: 'transparent',
-                    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                    backgroundColor: this.bgColor,
                     data: this.chartData
                 }
             ]
