@@ -79,6 +79,7 @@ export default {
             })
         },
         color() {
+            if (this.openingValue() === 0 && this.closingValue() === 0) return ''
             if (this.openingValue() < this.closingValue()) {
                 return 'green'
             }
