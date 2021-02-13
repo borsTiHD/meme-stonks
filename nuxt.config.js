@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import pkg from './package.json'
 
 export default {
     // Target: https://go.nuxtjs.dev/config-target
@@ -6,8 +7,8 @@ export default {
 
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
-        titleTemplate: '%s - meme-stonks',
-        title: 'meme-stonks',
+        titleTemplate: '%s',
+        title: pkg.productName,
         htmlAttrs: {
             lang: 'en'
         },
