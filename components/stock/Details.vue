@@ -32,8 +32,7 @@ import { mapGetters } from 'vuex'
 export default {
     computed: {
         ...mapGetters({
-            getCurrentStock: 'stock/getCurrentStock',
-            getExchange: 'stock/getExchange'
+            getCurrentStock: 'stock/getCurrentStock'
         }),
         stock() {
             if (!this.getCurrentStock) {

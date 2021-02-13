@@ -70,6 +70,7 @@ export default {
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
             setApiToken: 'setApiToken',
+            setExchangeDetails: 'stock/setExchangeDetails',
             setStocks: 'stock/setStocks'
         }),
         fetchData() {
@@ -91,8 +92,9 @@ export default {
                 limit: 1000
             }
 
-            const url = `${this.getBaseUrl}/exchanges/${this.getExchange}/tickers`
-            this.$axios.get(url, { params })
+            // Ermittelt Verfügbare Stock eines Exchanges
+            const getStocks = `${this.getBaseUrl}/exchanges/${this.getExchange}/tickers`
+            this.$axios.get(getStocks, { params })
                 .then((response) => {
                     const stocks = response.data.data.tickers
                     this.setStocks(stocks)
@@ -100,6 +102,16 @@ export default {
                     console.log(error)
                 }).finally(() => {
                     this.loadingData = false
+                })
+
+            // Ermittelt Exchange Details
+            const exchangeDetails = `${this.getBaseUrl}/exchanges/${this.getExchange}`
+            this.$axios.get(exchangeDetails, { params })
+                .then((response) => {
+                    const data = response.data
+                    this.setExchangeDetails(data)
+                }).catch((error) => {
+                    console.log(error)
                 })
         },
         async onResize() {

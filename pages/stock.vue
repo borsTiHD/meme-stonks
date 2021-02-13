@@ -4,10 +4,7 @@
             <stock-details />
         </v-col>
         <v-col cols="12" md="4" class="d-flex flex-column">
-            <v-card class="flex d-flex flex-column">
-                <v-card-title class="headline">Object</v-card-title>
-                <v-card-text> test </v-card-text>
-            </v-card>
+            <exchange-details />
         </v-col>
         <v-col cols="12" md="4" class="d-flex flex-column">
             <latest-days-chart
@@ -28,12 +25,14 @@
 import { mapGetters } from 'vuex'
 
 import StockDetails from '~/components/stock/Details.vue'
+import ExchangeDetails from '~/components/stock/Exchange.vue'
 import LatestDaysChart from '~/components/stock/LatestDaysChart.vue'
 import BigLineChart from '~/components/stock/BigLineChart.vue'
 
 export default {
     components: {
         StockDetails,
+        ExchangeDetails,
         LatestDaysChart,
         BigLineChart
     },
