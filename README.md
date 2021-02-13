@@ -13,8 +13,9 @@ $ yarn dev
 $ yarn build
 $ yarn start
 
-# generate static project
+# generate static project and deploy on 'live' branch
 $ yarn generate
+$ yarn deploy
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
