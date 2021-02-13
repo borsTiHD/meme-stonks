@@ -161,6 +161,7 @@ export default {
         setToken() {
             this.setApiToken(this.token)
             this.apiTokenDialog = false
+            this.setRightDrawer(false)
         },
         changeExchange() {
             // Setzt aktuellen Token ins Inputfeld
@@ -170,6 +171,7 @@ export default {
             console.log('Set Exchange:', this.exchange)
             this.setExchange(this.exchange)
             this.exchangeDialog = false
+            this.setRightDrawer(false)
         },
         querySelections(v) {
             this.loading = true
