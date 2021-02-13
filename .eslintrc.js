@@ -7,18 +7,12 @@ module.exports = {
     parserOptions: {
         parser: 'babel-eslint'
     },
-    extends: [
-        '@nuxtjs',
-        'prettier',
-        'prettier/vue',
-        'plugin:prettier/recommended',
-        'plugin:nuxt/recommended'
-    ],
+    extends: ['@nuxtjs', 'prettier', 'prettier/vue', 'plugin:prettier/recommended', 'plugin:nuxt/recommended'],
     plugins: ['prettier'],
     // add your custom rules here
     rules: {
         indent: [
-            'warn',
+            'error',
             4,
             {
                 outerIIFEBody: 1,
@@ -27,8 +21,9 @@ module.exports = {
             }
         ], // 4 spaces – for indentation
         'prettier/prettier': [
-            'warn',
+            'error',
             {
+                printWidth: 120,
                 singleQuote: true,
                 semi: false,
                 trailingComma: 'none',

@@ -5,11 +5,7 @@
         <app-settingsbar />
 
         <v-main>
-            <v-container
-                id="container"
-                fluid
-                :style="`height: ${containerHeight}px;`"
-            >
+            <v-container id="container" fluid :style="`height: ${containerHeight}px;`">
                 <nuxt keep-alive />
             </v-container>
         </v-main>

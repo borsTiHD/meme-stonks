@@ -29,14 +29,8 @@
                     />
                     <span>days</span>
                 </v-col>
-                <v-col
-                    v-if="openingValue() !== 0 && closingValue() !== 0"
-                    class="d-flex flex-sm-row justify-end"
-                >
-                    <percentage-sheet
-                        :opening-value="openingValue()"
-                        :closing-value="closingValue()"
-                    />
+                <v-col v-if="openingValue() !== 0 && closingValue() !== 0" class="d-flex flex-sm-row justify-end">
+                    <percentage-sheet :opening-value="openingValue()" :closing-value="closingValue()" />
                 </v-col>
             </v-row>
         </v-card-text>

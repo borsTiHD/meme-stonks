@@ -3,11 +3,7 @@
         <v-btn icon @click.stop="drawer = !drawer">
             <v-icon>mdi-menu</v-icon>
         </v-btn>
-        <v-toolbar-title
-            style="cursor: pointer"
-            @click="$router.push('/')"
-            v-text="title"
-        />
+        <v-toolbar-title style="cursor: pointer" @click="$router.push('/')" v-text="title" />
         <v-spacer />
         <v-autocomplete
             v-model="selectedStock"

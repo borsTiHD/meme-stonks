@@ -7,16 +7,10 @@
             <exchange-details />
         </v-col>
         <v-col cols="12" md="4" class="d-flex flex-column">
-            <latest-days-chart
-                :loading-data="loadingData"
-                :stock-data="stockData"
-            />
+            <latest-days-chart :loading-data="loadingData" :stock-data="stockData" />
         </v-col>
         <v-col cols="12" class="d-flex flex-column">
-            <big-line-chart
-                :loading-data="loadingData"
-                :stock-data="stockData"
-            />
+            <big-line-chart :loading-data="loadingData" :stock-data="stockData" />
         </v-col>
     </v-row>
 </template>

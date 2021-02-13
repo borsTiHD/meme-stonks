@@ -9,16 +9,10 @@
                 v-on="on"
                 @click="showPercentage = !showPercentage"
             >
-                <v-icon
-                    :color="color() + ' darken-3'"
-                    class="align-self-center"
-                >
+                <v-icon :color="color() + ' darken-3'" class="align-self-center">
                     {{ icon() }}
                 </v-icon>
-                <span
-                    :class="color() + '--text text--darken-3'"
-                    class="align-self-center"
-                >
+                <span :class="color() + '--text text--darken-3'" class="align-self-center">
                     {{ showPercentage ? percentageIncrease()+' %' : valueIncrease()+' €' }}
                 </span>
             </v-sheet>

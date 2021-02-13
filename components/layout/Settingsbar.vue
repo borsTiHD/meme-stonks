@@ -19,9 +19,7 @@
 
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn color="primary" text @click="setToken">
-                        Set Token
-                    </v-btn>
+                    <v-btn color="primary" text @click="setToken">Set Token</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -29,9 +27,7 @@
         <v-list nav>
             <v-list-item>
                 <v-list-item-content>
-                    <v-list-item-title class="title">
-                        Application
-                    </v-list-item-title>
+                    <v-list-item-title class="title">Application</v-list-item-title>
                     <v-list-item-subtitle>Settings</v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
