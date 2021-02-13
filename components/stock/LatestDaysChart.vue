@@ -1,9 +1,5 @@
 <template>
-    <v-card
-        class="flex d-flex flex-column"
-        :color="stockProperties().color"
-        dark
-    >
+    <v-card class="flex d-flex flex-column" :color="color()" dark>
         <v-card-text>
             <v-progress-linear v-if="loadingData" indeterminate color="white" />
             <v-sheet v-else color="rgba(0, 0, 0, .12)">
@@ -33,14 +29,14 @@
                     />
                     <span>days</span>
                 </v-col>
-                <v-col class="d-flex flex-sm-row justify-end">
-                    <v-icon
-                        large
-                        :color="stockProperties().color + ' darken-3'"
-                        class="align-self-center"
-                    >
-                        {{ stockProperties().icon }}
-                    </v-icon>
+                <v-col
+                    v-if="openingValue() !== 0 && closingValue() !== 0"
+                    class="d-flex flex-sm-row justify-end"
+                >
+                    <percentage-sheet
+                        :opening-value="openingValue()"
+                        :closing-value="closingValue()"
+                    />
                 </v-col>
             </v-row>
         </v-card-text>
@@ -48,7 +44,12 @@
 </template>
 
 <script>
+import PercentageSheet from '~/components/display/PercentageSheet.vue'
+
 export default {
+    components: {
+        PercentageSheet
+    },
     props: {
         stockData: {
             type: Object,
@@ -75,27 +76,36 @@ export default {
             const data = this.stockData?.eod
             if (!Array.isArray(data)) return []
             const length = data.length
-            return data.slice(length-limit, length).map((v) => {
+            return data.slice(length-limit, length).map((v, index) => {
                 // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
-                return v.close
+                if (index === 0) {
+                    return v.open // Erstes Item bekommt Opening Wert!
+                }
+                return v.close // Jeder nachfolgende Tage bekommt Closing Wert
             })
         },
-        stockProperties() {
+        color() {
+            if (this.openingValue() < this.closingValue()) {
+                return 'green'
+            }
+            return 'red'
+        },
+        openingValue() {
             const limit = this.days
             const data = this.stockData?.eod
-            if (!Array.isArray(data)) return { color: '', icon: 'mdi-arrow-left-right' }
+            if (!Array.isArray(data)) return 0
 
-            // Ermittelt Data
             const length = data.length
             const firstData = data[length-limit]
-            const lastData = data[length-1]
+            return firstData?.open
+        },
+        closingValue() {
+            const data = this.stockData?.eod
+            if (!Array.isArray(data)) return 0
 
-            // Vergleicht 'Opening' mit 'Closing' Data
-            if (firstData.open < lastData.close) {
-                return { color: 'green', icon: 'mdi-arrow-top-right' }
-            } else {
-                return { color: 'red', icon: 'mdi-arrow-bottom-right' }
-            }
+            const length = data.length
+            const lastData = data[length-1]
+            return lastData?.close
         }
     }
 }
