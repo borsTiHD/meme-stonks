@@ -26,6 +26,8 @@ export default {
     },
     computed: {
         ...mapGetters({
+            getRapidBaseUrl: 'getRapidBaseUrl',
+            getRapidApiToken: 'getRapidApiToken',
             getCurrentStock: 'stock/getCurrentStock'
         }),
         stockName() {
@@ -38,8 +40,8 @@ export default {
     watch: {
         // Fetcht neue News wenn Stock geändert wird
         getCurrentStock() {
-            this.fetchNews().catch(() => {
-                // console.error(err)
+            this.fetchNews().catch((err) => {
+                console.error(err)
                 this.loadingData = false
             })
         }
@@ -54,12 +56,25 @@ export default {
                     return reject(new Error('No Stock Selected'))
                 }
 
+                // Kein ApiToken -> KEIN FETCHING!
+                if (!this.getRapidApiToken || this.getRapidApiToken === 'null' || this.getRapidApiToken === '') {
+                    return reject(new Error('No Api Token'))
+                }
+
                 this.loadingData = true
 
                 // News URL
-                const url = `http://news.google.com/news?q=${this.stockName}&output=rss`
+                const url = `https://${this.getRapidBaseUrl}/news/search`
+                const options = {
+                    params: {q: this.stockName, freshness: 'Day', textFormat: 'Raw', safeSearch: 'Off'},
+                    headers: {
+                        'x-bingapis-sdk': 'true',
+                        'x-rapidapi-key': this.getRapidApiToken,
+                        'x-rapidapi-host': this.getRapidBaseUrl
+                    }
+                }
 
-                this.$axios.get(url, { crossdomain: true })
+                this.$axios.get(url, options)
                     .then((res) => {
                         console.log('[APP] -> Stock News:', res)
                     }).catch((error) => {

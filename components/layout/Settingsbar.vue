@@ -5,14 +5,36 @@
                 <v-card-title class="headline">Set Api Token</v-card-title>
 
                 <v-card-text>
-                    <v-text-field
-                        v-model="token"
-                        label="new token"
-                        :value="getApiToken"
-                        clearable
-                        single-line
-                        outlined
-                    ></v-text-field>
+                    <v-row>
+                        <v-col cols="4">
+                            <v-subheader>Marketstack.com</v-subheader>
+                        </v-col>
+                        <v-col cols="8">
+                            <v-text-field
+                                v-model="token"
+                                label="Marketstack.com Api Key"
+                                :value="getApiToken"
+                                clearable
+                                single-line
+                                outlined
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row>
+                        <v-col cols="4">
+                            <v-subheader>Rakuten Rapid API</v-subheader>
+                        </v-col>
+                        <v-col cols="8">
+                            <v-text-field
+                                v-model="rapidApiToken"
+                                label="english.api.rakuten.net Api Key"
+                                :value="getRapidApiToken"
+                                clearable
+                                single-line
+                                outlined
+                            ></v-text-field>
+                        </v-col>
+                    </v-row>
                 </v-card-text>
 
                 <v-divider />
@@ -100,6 +122,7 @@ export default {
         return {
             apiTokenDialog: false,
             token: '',
+            rapidApiToken: '',
             exchangeDialog: false,
             searchExchange: null,
             exchange: '',
@@ -139,11 +162,13 @@ export default {
     },
     methods: {
         ...mapGetters({
-            getApiToken: 'getApiToken'
+            getApiToken: 'getApiToken',
+            getRapidApiToken: 'getRapidApiToken'
         }),
         ...mapActions({
             setRightDrawer: 'layout/setRightDrawer',
             setApiToken: 'setApiToken',
+            setRapidApiToken: 'setRapidApiToken',
             setExchange: 'stock/setExchange'
         }),
         changeDarkMode() {
@@ -154,12 +179,14 @@ export default {
             }
         },
         changeApiToken() {
-            // Setzt aktuellen Token ins Inputfeld
+            // Setzt aktuellen Tokens in Inputfelder
             this.token = this.getApiToken()
+            this.rapidApiToken = this.getRapidApiToken()
             this.apiTokenDialog = true
         },
         setToken() {
             this.setApiToken(this.token)
+            this.setRapidApiToken(this.rapidApiToken)
             this.apiTokenDialog = false
             this.setRightDrawer(false)
         },
