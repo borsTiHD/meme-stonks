@@ -74,7 +74,6 @@ export default {
                 }
 
                 // Gibt es bereits Stock Data, wird nicht gefetcht
-                console.log('this.getCurrentStockData', this.getCurrentStockData)
                 if (this.getCurrentStockData) {
                     return resolve(true)
                 }
