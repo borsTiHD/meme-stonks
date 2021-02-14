@@ -109,12 +109,12 @@ export default {
 
                 // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
                 if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
-                    reject(new Error('Data Exists'))
+                    return reject(new Error('Data Exists'))
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
                 if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
-                    reject(new Error('No Api Token'))
+                    return reject(new Error('No Api Token'))
                 }
 
                 const params = {
@@ -132,9 +132,9 @@ export default {
                         this.setCurrentStock(null) // Setzt aktive Aktie ggf. zurück
                     }).catch((error) => {
                         console.log(error)
-                        reject(error)
+                        return reject(error)
                     }).finally(() => {
-                        resolve(true)
+                        return resolve(true)
                     })
             })
         },
@@ -144,12 +144,12 @@ export default {
 
                 // Gibt es bereits Exchanges, brauchen die nicht erneut gefetcht werden
                 if (Array.isArray(this.getAllExchanges && this.getAllExchanges.length > 0)) {
-                    reject(new Error('Data Exists'))
+                    return reject(new Error('Data Exists'))
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
                 if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
-                    reject(new Error('No Api Token'))
+                    return reject(new Error('No Api Token'))
                 }
 
                 const params = {
@@ -175,9 +175,9 @@ export default {
                         this.setExchange(defaultExchange)
                     }).catch((error) => {
                         console.log(error)
-                        reject(error)
+                        return reject(error)
                     }).finally(() => {
-                        resolve(true)
+                        return resolve(true)
                     })
             })
         },

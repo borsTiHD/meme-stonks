@@ -7,16 +7,16 @@
             <exchange-details />
         </v-col>
         <v-col cols="12" md="6" class="d-flex flex-column">
-            <latest-days-chart :loading-data="loadingData" :stock-data="stockData" />
+            <latest-days-chart :loading-data="loadingData" :stock-data="getCurrentStockData" />
         </v-col>
         <v-col cols="12" class="d-flex flex-column">
-            <big-line-chart :loading-data="loadingData" :stock-data="stockData" />
+            <big-line-chart :loading-data="loadingData" :stock-data="getCurrentStockData" />
         </v-col>
     </v-row>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 import StockDetails from '~/components/stock/Details.vue'
 import ExchangeDetails from '~/components/stock/Exchange.vue'
@@ -32,7 +32,6 @@ export default {
     },
     data() {
         return {
-            stockData: {},
             loadingData: false
         }
     },
@@ -41,8 +40,16 @@ export default {
             getApiToken: 'getApiToken',
             getBaseUrl: 'getBaseUrl',
             getCurrentStock: 'stock/getCurrentStock',
+            getStockData: 'stock/getStockData',
             getExchange: 'stock/getExchange'
-        })
+        }),
+        getCurrentStockData() {
+            // Kein Current Stock, werden keine Daten zurück gegeben
+            if (!this.getCurrentStock) {
+                return {}
+            }
+            return this.getStockData(this.getCurrentStock.name)
+        }
     },
     watch: {
         // Fetcht neue Daten wenn Stock geändert wird
@@ -54,16 +61,22 @@ export default {
         }
     },
     methods: {
+        ...mapActions({
+            addStockData: 'stock/addStockData'
+        }),
         fetchStockData() {
             return new Promise((resolve, reject) => {
                 console.log('[App] -> Fetching Stock Data')
 
-                // Setzt alte Daten zurück
-                this.stockData = {}
-
                 // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
                 if (!this.getCurrentStock) {
-                    reject(new Error('No Stock Selected'))
+                    return reject(new Error('No Stock Selected'))
+                }
+
+                // Gibt es bereits Stock Data, wird nicht gefetcht
+                console.log('this.getCurrentStockData', this.getCurrentStockData)
+                if (this.getCurrentStockData) {
+                    return resolve(true)
                 }
 
                 this.loadingData = true
@@ -82,15 +95,15 @@ export default {
                     .then((res) => {
                         const stockData = res.data.data
                         console.log('[APP] -> Stock Data:', stockData)
-                        this.stockData = stockData
+                        this.addStockData(stockData)
                         this.loadingData = false
                     }).catch((error) => {
                         console.log(error)
                         this.loadingData = false
-                        reject(error)
+                        return reject(error)
                     }).finally(() => {
                         this.loadingData = false
-                        resolve(true)
+                        return resolve(true)
                     })
             })
         }

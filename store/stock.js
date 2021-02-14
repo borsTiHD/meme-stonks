@@ -3,7 +3,8 @@ export const state = () => ({
     currentExchange: null,
     exchanges: [],
     currentStock: null,
-    stocks: []
+    stocks: [],
+    stockData: []
 })
 
 // Sync functions for setting data
@@ -19,6 +20,14 @@ export const mutations = {
     },
     setStocks: (state, payload) => {
         state.stocks = payload
+    },
+    addStockData: (state, payload) => {
+        // NICHT diese Mutation ausführen, sondern die gleichnamige ACTION!!!
+
+        // Fügt neue StockData hinzu, wenn sie noch nicht vorhanden ist
+        if (!state.stockData.find(({ name }) => name === payload.name)) {
+            state.stockData.push(payload)
+        }
     }
 }
 
@@ -39,6 +48,12 @@ export const actions = {
     },
     setStocks: (vuexContext, payload) => {
         vuexContext.commit('setStocks', payload)
+    },
+    addStockData: ({ commit, dispatch, state }, payload) => {
+        // Prüft ob StockData bereits gespeichert wurde
+        if (!state.stockData.find(({ name }) => name === payload.name)) {
+            commit('addStockData', payload)
+        }
     }
 }
 
@@ -55,5 +70,11 @@ export const getters = {
     },
     getStocks: (state) => {
         return state.stocks
+    },
+    getStockData: (state) => (name) => {
+        // Wird kein parameter zur Suche angegeben, werden ALLE StockDatas zurückgegeben
+        if (!name) return state.stockData
+        // Liefert das erste mit gleichen Namen, oder Symbol gefundene StockData Objekt zurück
+        return state.stockData.find((data) => data.name === name || data.symbol === name)
     }
 }
