@@ -71,6 +71,7 @@ export default {
 
                 // Gibt es bereits News, wird nicht gefetcht
                 if (this.stockNews) {
+                    console.log('[APP] -> Saved News:', this.stockNews.data)
                     return resolve(true)
                 }
 
