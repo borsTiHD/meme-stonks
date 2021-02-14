@@ -12,6 +12,9 @@
         <v-col cols="12" class="d-flex flex-column">
             <big-line-chart :loading-data="loadingData" :stock-data="getCurrentStockData" />
         </v-col>
+        <v-col cols="12" class="d-flex flex-column">
+            <news />
+        </v-col>
     </v-row>
 </template>
 
@@ -22,13 +25,15 @@ import StockDetails from '~/components/stock/Details.vue'
 import ExchangeDetails from '~/components/stock/Exchange.vue'
 import LatestDaysChart from '~/components/stock/LatestDaysChart.vue'
 import BigLineChart from '~/components/stock/BigLineChart.vue'
+import News from '~/components/stock/News.vue'
 
 export default {
     components: {
         StockDetails,
         ExchangeDetails,
         LatestDaysChart,
-        BigLineChart
+        BigLineChart,
+        News
     },
     data() {
         return {
