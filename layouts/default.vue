@@ -109,7 +109,7 @@ export default {
 
                 // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
                 if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
-                    return reject(new Error('Data Exists'))
+                    return resolve(true)
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!

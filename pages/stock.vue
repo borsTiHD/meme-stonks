@@ -59,8 +59,8 @@ export default {
     watch: {
         // Fetcht neue Daten wenn Stock geändert wird
         getCurrentStock() {
-            this.fetchStockData().catch(() => {
-                // console.error(err)
+            this.fetchStockData().catch((err) => {
+                console.error(err)
                 this.loadingData = false
             })
         }
@@ -81,6 +81,11 @@ export default {
                 // Gibt es bereits Stock Data, wird nicht gefetcht
                 if (this.getCurrentStockData) {
                     return resolve(true)
+                }
+
+                // Kein ApiToken -> KEIN FETCHING!
+                if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                    return reject(new Error('No Api Token'))
                 }
 
                 this.loadingData = true
