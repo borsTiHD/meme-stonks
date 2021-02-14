@@ -71,25 +71,41 @@ export default {
         ...mapGetters({
             getExchange: 'stock/getExchange'
         }),
+        data() {
+            // Computed Property für 'chartData', damit die Daten überwacht und bei Änderung zum Rerender führen können
+            return this.chartData
+        },
         currency() {
             return this.getExchange?.currency?.symbol || ''
         }
     },
+    watch: {
+        // Rendert Chart neu, sobald sich Daten ändern
+        data() {
+            this.buildChart()
+        }
+    },
     mounted() {
-        this.renderChart({
-            labels: this.chartLabels,
-            datasets: [
-                {
-                    label: this.currency,
-                    borderColor: this.lineColor,
-                    borderWidth: 2,
-                    pointBackgroundColor: 'transparent',
-                    pointBorderColor: 'transparent',
-                    backgroundColor: this.bgColor,
-                    data: this.chartData
-                }
-            ]
-        }, this.options)
+        this.buildChart()
+    },
+    methods: {
+        buildChart() {
+            // Render Function gewrapped, damit sie immer wieder genutzt werden kann (zum Rerendern)
+            this.renderChart({
+                labels: this.chartLabels,
+                datasets: [
+                    {
+                        label: this.currency,
+                        borderColor: this.lineColor,
+                        borderWidth: 2,
+                        pointBackgroundColor: 'transparent',
+                        pointBorderColor: 'transparent',
+                        backgroundColor: this.bgColor,
+                        data: this.data
+                    }
+                ]
+            }, this.options)
+        }
     }
 }
 </script>
