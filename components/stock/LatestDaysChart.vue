@@ -1,16 +1,28 @@
 <template>
     <v-card class="flex d-flex flex-column" :color="color()" dark>
-        <v-card-text>
-            <v-progress-linear v-if="loadingData" indeterminate color="white" />
-            <v-sheet v-else color="rgba(0, 0, 0, .12)">
-                <v-sparkline
-                    :value="stockValue()"
-                    line-width="1"
-                    color="rgba(255, 255, 255, .7)"
-                    stroke-linecap="round"
-                    smooth
-                />
-            </v-sheet>
+        <v-progress-linear v-if="loadingData" indeterminate color="white" />
+        <v-card-text v-else class="pb-0">
+            <v-row>
+                <v-col>
+                    <v-sheet color="rgba(0, 0, 0, .12)">
+                        <v-sparkline
+                            :value="stockValue()"
+                            line-width="1"
+                            color="rgba(255, 255, 255, .7)"
+                            stroke-linecap="round"
+                            smooth
+                        />
+                    </v-sheet>
+                </v-col>
+            </v-row>
+            <v-row :class="'text-subtitle-1 ' + color() + '--text text--darken-4'">
+                <v-col class="d-flex flex-sm-row pa-0 px-2">
+                    <span>{{ openingValue() + ' ' + currency }}</span>
+                </v-col>
+                <v-col class="d-flex flex-sm-row pa-0 px-2 justify-end">
+                    <span>{{ closingValue() + ' ' + currency }}</span>
+                </v-col>
+            </v-row>
         </v-card-text>
 
         <v-card-text>
@@ -38,6 +50,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import PercentageSheet from '~/components/display/PercentageSheet.vue'
 
 export default {
@@ -62,6 +75,14 @@ export default {
         return {
             daysSelect: [2, 7, 14, 30, 60],
             days: 30
+        }
+    },
+    computed: {
+        ...mapGetters({
+            getExchange: 'stock/getExchange'
+        }),
+        currency() {
+            return this.getExchange?.currency?.symbol || ''
         }
     },
     methods: {
