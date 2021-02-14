@@ -1,6 +1,5 @@
 <template>
     <v-card class="flex d-flex flex-column">
-        <v-card-title class="headline">Details</v-card-title>
         <v-card-text>
             <v-row dense>
                 <v-col class="pb-0">
@@ -11,8 +10,6 @@
                         </div>
                     </div>
                 </v-col>
-            </v-row>
-            <v-row dense>
                 <v-col class="pb-0">
                     <div class="d-flex flex-row">
                         <div class="font-weight-medium">Symbol:</div>

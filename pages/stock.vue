@@ -1,12 +1,12 @@
 <template>
     <v-row>
-        <v-col cols="12" md="4" class="d-flex flex-column">
+        <v-col cols="12" class="d-flex flex-column">
             <stock-details />
         </v-col>
-        <v-col cols="12" md="4" class="d-flex flex-column">
+        <v-col cols="12" md="6" class="d-flex flex-column">
             <exchange-details />
         </v-col>
-        <v-col cols="12" md="4" class="d-flex flex-column">
+        <v-col cols="12" md="6" class="d-flex flex-column">
             <latest-days-chart :loading-data="loadingData" :stock-data="stockData" />
         </v-col>
         <v-col cols="12" class="d-flex flex-column">
