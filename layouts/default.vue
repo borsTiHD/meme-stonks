@@ -70,6 +70,11 @@ export default {
                 this.setApiToken(localStorage.getItem('apiToken'))
             }
 
+            // Ermittelt Rapid Api Token aus LocalStorage und speichert im Store
+            if (localStorage.getItem('rapidApiToken')) {
+                this.setRapidApiToken(localStorage.getItem('rapidApiToken'))
+            }
+
             // Fetcht Daten -> werden auch über Watch gefetcht.
             // this.fetchData()
         }
@@ -79,6 +84,7 @@ export default {
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
             setApiToken: 'setApiToken',
+            setRapidApiToken: 'setRapidApiToken',
             setAllExchanges: 'stock/setAllExchanges',
             setExchange: 'stock/setExchange',
             setStocks: 'stock/setStocks',

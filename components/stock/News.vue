@@ -1,13 +1,19 @@
 <template>
     <v-card class="flex d-flex flex-column">
         <v-card-title class="headline">News:</v-card-title>
-        <v-card-text>
+        <v-progress-linear v-if="loadingData" indeterminate color="white" />
+        <v-card-text v-for="(item, index) in stockNews.data" v-else :key="index">
             <v-row dense>
                 <v-col class="pb-0">
                     <div class="d-flex flex-row">
-                        <div class="font-weight-medium">Name:</div>
-                        <div class="pl-2">xxx</div>
+                        <div class="font-weight-medium">Headline:</div>
+                        <div class="pl-2">{{ item.name }} ({{ item.datePublished | moment("DD.MM.YYYY HH:mm") }})</div>
                     </div>
+                </v-col>
+            </v-row>
+            <v-row dense>
+                <v-col class="pb-0">
+                    <p>{{ item.description }}</p>
                 </v-col>
             </v-row>
         </v-card-text>
@@ -15,7 +21,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     data() {
@@ -28,13 +34,17 @@ export default {
         ...mapGetters({
             getRapidBaseUrl: 'getRapidBaseUrl',
             getRapidApiToken: 'getRapidApiToken',
-            getCurrentStock: 'stock/getCurrentStock'
+            getCurrentStock: 'stock/getCurrentStock',
+            getNews: 'news/getNews'
         }),
         stockName() {
             if (!this.getCurrentStock) {
                 return ''
             }
             return this.getCurrentStock.name
+        },
+        stockNews() {
+            return this.getNews(this.stockName)
         }
     },
     watch: {
@@ -47,6 +57,9 @@ export default {
         }
     },
     methods: {
+        ...mapActions({
+            addNews: 'news/addNews'
+        }),
         fetchNews() {
             return new Promise((resolve, reject) => {
                 console.log('[App] -> Fetching News for Stock')
@@ -54,6 +67,11 @@ export default {
                 // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
                 if (!this.getCurrentStock) {
                     return reject(new Error('No Stock Selected'))
+                }
+
+                // Gibt es bereits News, wird nicht gefetcht
+                if (this.stockNews) {
+                    return resolve(true)
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
@@ -76,7 +94,12 @@ export default {
 
                 this.$axios.get(url, options)
                     .then((res) => {
-                        console.log('[APP] -> Stock News:', res)
+                        const news = res.data.value
+                        console.log('[APP] -> Stock News:', news)
+                        this.addNews({
+                            name: this.stockName,
+                            data: news
+                        })
                     }).catch((error) => {
                         console.log(error)
                         return reject(error)
