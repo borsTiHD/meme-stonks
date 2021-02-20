@@ -18,7 +18,7 @@ export default ({ app }, inject) => {
 
                 // Kein ApiToken -> KEIN FETCHING!
                 if (!stockApiToken || stockApiToken === 'null' || stockApiToken === '') {
-                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token for Marketstack.com'))
+                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'))
                 }
 
                 // Parameter für API Call
@@ -71,7 +71,7 @@ export default ({ app }, inject) => {
 
                 // Kein ApiToken -> KEIN FETCHING!
                 if (!stockApiToken || stockApiToken === 'null' || stockApiToken === '') {
-                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token for Marketstack.com'))
+                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'))
                 }
 
                 // Parameter für API Call
@@ -100,51 +100,54 @@ export default ({ app }, inject) => {
         },
 
         /**
-         * fetchStockDataEod() : Fetcht EOD Data eines Stocks
+         * fetchStockData() : Fetcht Stock Details + End of Day Data
          */
-        fetchStockDataEod() {
+        fetchStockData() {
             return new Promise((resolve, reject) => {
                 console.log('[App] -> Fetching Stock Data')
 
+                // Ermittelt Daten
+                const currentStock = app.store.getters['stock/getCurrentStock']
+                const stockApiToken = app.store.getters.getStockApiToken
+                const exchange = app.store.getters['stock/getExchange']
+
                 // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
-                if (!this.getCurrentStock) {
-                    return reject(new Error('No Stock Selected'))
+                if (!currentStock) {
+                    return reject(new Error('No Stock Selected. Please select a stock in the upper search field.'))
                 }
 
                 // Gibt es bereits Stock Data, wird nicht gefetcht
-                if (this.getCurrentStockData) {
+                const stockData = app.store.getters['stock/getStockData'](currentStock?.name)
+                if (stockData) {
                     return resolve(true)
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
-                    return reject(new Error('No Api Token'))
+                if (!stockApiToken || stockApiToken === 'null' || stockApiToken === '') {
+                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'))
                 }
 
-                this.loadingData = true
-
+                // Parameter für API Call
                 const params = {
-                    access_key: this.getStockApiToken,
-                    exchange: this.getExchange.mic,
+                    access_key: stockApiToken,
+                    exchange: exchange.mic,
                     sort: 'ASC',
                     limit: 1000
                 }
 
-                const symbol = this.getCurrentStock.symbol
-                const url = `${this.getStockBaseUrl}/tickers/${symbol}/eod`
-
-                this.$axios.get(url, { params })
+                // Ermittelt Stock Daten
+                const symbol = currentStock.symbol
+                const baseUrl = app.store.getters.getStockBaseUrl
+                const url = `${baseUrl}/tickers/${symbol}/eod`
+                app.$axios.get(url, { params })
                     .then((res) => {
                         const stockData = res.data.data
                         console.log('[APP] -> Stock Data:', stockData)
-                        this.addStockData(stockData)
-                        this.loadingData = false
+                        app.store.dispatch('stock/addStockData', stockData) // Store
                     }).catch((error) => {
                         console.log(error)
-                        this.loadingData = false
                         return reject(error)
                     }).finally(() => {
-                        this.loadingData = false
                         return resolve(true)
                     })
             })

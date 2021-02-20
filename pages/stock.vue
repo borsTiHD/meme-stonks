@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 import StockDetails from '~/components/stock/Details.vue'
 import ExchangeDetails from '~/components/stock/Exchange.vue'
@@ -45,11 +45,8 @@ export default {
     },
     computed: {
         ...mapGetters({
-            getStockApiToken: 'getStockApiToken',
-            getStockBaseUrl: 'getStockBaseUrl',
             getCurrentStock: 'stock/getCurrentStock',
-            getStockData: 'stock/getStockData',
-            getExchange: 'stock/getExchange'
+            getStockData: 'stock/getStockData'
         }),
         getCurrentStockData() {
             // Kein Current Stock, werden keine Daten zurück gegeben
@@ -60,64 +57,25 @@ export default {
         }
     },
     watch: {
-        // Fetcht neue Daten wenn Stock geändert wird
-        getCurrentStock() {
-            this.fetchStockData().catch((err) => {
-                console.error(err)
-                this.loadingData = false
-            })
+        async getCurrentStock() {
+            // Fetcht neue Daten wenn Stock geändert wird
+            this.fetchStockData()
         }
     },
+    created() {
+        this.fetchStockData()
+    },
+    activated() {
+        this.fetchStockData()
+    },
     methods: {
-        ...mapActions({
-            addStockData: 'stock/addStockData'
-        }),
-        fetchStockData() {
-            return new Promise((resolve, reject) => {
-                console.log('[App] -> Fetching Stock Data')
-
-                // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
-                if (!this.getCurrentStock) {
-                    return reject(new Error('No Stock Selected'))
-                }
-
-                // Gibt es bereits Stock Data, wird nicht gefetcht
-                if (this.getCurrentStockData) {
-                    return resolve(true)
-                }
-
-                // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
-                    return reject(new Error('No Api Token'))
-                }
-
-                this.loadingData = true
-
-                const params = {
-                    access_key: this.getStockApiToken,
-                    exchange: this.getExchange.mic,
-                    sort: 'ASC',
-                    limit: 1000
-                }
-
-                const symbol = this.getCurrentStock.symbol
-                const url = `${this.getStockBaseUrl}/tickers/${symbol}/eod`
-
-                this.$axios.get(url, { params })
-                    .then((res) => {
-                        const stockData = res.data.data
-                        console.log('[APP] -> Stock Data:', stockData)
-                        this.addStockData(stockData)
-                        this.loadingData = false
-                    }).catch((error) => {
-                        console.log(error)
-                        this.loadingData = false
-                        return reject(error)
-                    }).finally(() => {
-                        this.loadingData = false
-                        return resolve(true)
-                    })
+        async fetchStockData() {
+            // Fetcht Stock Daten
+            this.loadingData = true
+            await this.$apiCalls.fetchStockData().catch((err) => {
+                console.error(err)
             })
+            this.loadingData = false
         }
     }
 }
