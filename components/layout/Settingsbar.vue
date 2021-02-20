@@ -30,10 +30,6 @@
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
-    data() {
-        return {
-        }
-    },
     computed: {
         ...mapGetters({
             getRightDrawer: 'layout/getRightDrawer'
