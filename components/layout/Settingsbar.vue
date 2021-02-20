@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-model="rightDrawer" right temporary fixed>
+    <v-navigation-drawer v-model="rightDrawer" right temporary app>
         <v-dialog v-model="apiTokenDialog" width="500">
             <v-card>
                 <v-card-title class="headline">Set Api Token</v-card-title>
@@ -80,13 +80,15 @@
 
         <v-list nav>
             <v-list-item>
+                <v-list-item-avatar>
+                    <v-icon>mdi-cogs</v-icon>
+                </v-list-item-avatar>
                 <v-list-item-content>
-                    <v-list-item-title class="title">Application</v-list-item-title>
-                    <v-list-item-subtitle>Settings</v-list-item-subtitle>
+                    <v-list-item-title class="title">Quick Settings</v-list-item-title>
                 </v-list-item-content>
             </v-list-item>
 
-            <v-divider />
+            <v-divider class="pa-1" />
 
             <v-list-item @click="changeDarkMode">
                 <v-list-item-action>
