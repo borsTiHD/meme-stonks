@@ -65,9 +65,17 @@ export default {
     created() {
         // Client Side
         if (process.client) {
-            // Ermittelt Token aus LocalStorage und speichert im Store
+            // Ermittelt Stock Api Token aus LocalStorage und speichert im Store
             if (localStorage.getItem('stockApiToken')) {
-                this.setStockApiToken(localStorage.getItem('apiToken'))
+                this.setStockApiToken(localStorage.getItem('stockApiToken'))
+            }
+
+            // Ermittelt Stock Token Premium State
+            const premiumCheck = localStorage.getItem('stockApiTokenPremium')
+            if (premiumCheck === 'true') {
+                this.setStockApiTokenPremium(true)
+            } else if (premiumCheck === 'false') {
+                this.setStockApiTokenPremium(false)
             }
 
             // Ermittelt Rapid Api Token aus LocalStorage und speichert im Store
@@ -89,6 +97,7 @@ export default {
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
             setStockApiToken: 'setStockApiToken',
+            setStockApiTokenPremium: 'setStockApiTokenPremium',
             setRapidApiToken: 'setRapidApiToken',
             setAllExchanges: 'stock/setAllExchanges',
             setExchange: 'stock/setExchange',

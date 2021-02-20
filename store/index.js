@@ -33,7 +33,7 @@ export const actions = {
     setStockApiTokenPremium: (vuexContext, payload) => {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
         if (process.browser) {
-            const data = payload || ''
+            const data = payload || 'false'
             localStorage.setItem('stockApiTokenPremium', data)
         }
         vuexContext.commit('setStockApiTokenPremium', payload)

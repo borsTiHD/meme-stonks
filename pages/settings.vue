@@ -138,16 +138,19 @@ export default {
     methods: {
         ...mapGetters({
             getStockApiToken: 'getStockApiToken',
+            getStockApiTokenPremium: 'getStockApiTokenPremium',
             getRapidApiToken: 'getRapidApiToken'
         }),
         ...mapActions({
             setStockApiToken: 'setStockApiToken',
+            setStockApiTokenPremium: 'setStockApiTokenPremium',
             setRapidApiToken: 'setRapidApiToken',
             setExchange: 'stock/setExchange'
         }),
         loadData() {
-            // Setzt aktuellen Tokens in Inputfelder
+            // Setzt aktuelle Tokens in Inputfelder
             this.stockApiToken = this.getStockApiToken()
+            this.stockApiPremiumCheckbox = this.getStockApiTokenPremium()
             this.rapidApiToken = this.getRapidApiToken()
 
             // Setzt ggf. gespeicherten Exchange in Suche
@@ -155,6 +158,7 @@ export default {
         },
         setTokens() {
             this.setStockApiToken(this.stockApiToken)
+            this.setStockApiTokenPremium(this.stockApiPremiumCheckbox)
             this.setRapidApiToken(this.rapidApiToken)
         },
         exchangeQuerySelections(v) {
