@@ -3,30 +3,45 @@
         <v-row justify="center" align="center">
             <v-col cols="12" sm="8" md="6">
                 <v-card>
-                    <v-card-title class="headline">Set Api Token</v-card-title>
+                    <v-card-title class="headline">Set Api Tokens</v-card-title>
                     <v-card-text>
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="12" md="4">
                                 <v-subheader>Marketstack.com</v-subheader>
                             </v-col>
-                            <v-col cols="8">
+                            <v-col cols="12" md="6">
                                 <v-text-field
                                     v-model="stockApiToken"
-                                    label="Marketstack.com Api Key"
+                                    label="set api token for stock requests"
+                                    hide-details="auto"
                                     clearable
                                     single-line
                                     outlined
                                 />
                             </v-col>
+                            <v-col cols="12" md="2">
+                                <v-tooltip bottom>
+                                    <template #activator="{ on }">
+                                        <span v-on="on">
+                                            <v-checkbox
+                                                v-model="stockApiPremiumCheckbox"
+                                                label="Premium"
+                                            />
+                                        </span>
+                                    </template>
+                                    <span>Premium Key: Provides Intraday market data & real-time updates for 125,000+ tickers.</span>
+                                </v-tooltip>
+                            </v-col>
                         </v-row>
                         <v-row>
-                            <v-col cols="4">
+                            <v-col cols="12" md="4">
                                 <v-subheader>Rakuten Rapid API</v-subheader>
                             </v-col>
-                            <v-col cols="8">
+                            <v-col cols="12" md="8">
                                 <v-text-field
                                     v-model="rapidApiToken"
                                     label="english.api.rakuten.net Api Key"
+                                    hide-details="auto"
                                     clearable
                                     single-line
                                     outlined
@@ -88,6 +103,7 @@ export default {
     data() {
         return {
             stockApiToken: '',
+            stockApiPremiumCheckbox: false,
             rapidApiToken: '',
             searchExchange: null,
             exchange: '',
@@ -121,24 +137,24 @@ export default {
     },
     methods: {
         ...mapGetters({
-            getApiToken: 'getApiToken',
+            getStockApiToken: 'getStockApiToken',
             getRapidApiToken: 'getRapidApiToken'
         }),
         ...mapActions({
-            setApiToken: 'setApiToken',
+            setStockApiToken: 'setStockApiToken',
             setRapidApiToken: 'setRapidApiToken',
             setExchange: 'stock/setExchange'
         }),
         loadData() {
             // Setzt aktuellen Tokens in Inputfelder
-            this.stockApiToken = this.getApiToken()
+            this.stockApiToken = this.getStockApiToken()
             this.rapidApiToken = this.getRapidApiToken()
 
             // Setzt ggf. gespeicherten Exchange in Suche
             this.searchExchange = this.getExchange?.name
         },
         setTokens() {
-            this.setApiToken(this.stockApiToken)
+            this.setStockApiToken(this.stockApiToken)
             this.setRapidApiToken(this.rapidApiToken)
         },
         exchangeQuerySelections(v) {

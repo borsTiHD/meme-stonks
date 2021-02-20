@@ -43,7 +43,7 @@ export default {
     },
     computed: {
         ...mapGetters({
-            getApiToken: 'getApiToken',
+            getStockApiToken: 'getStockApiToken',
             getBaseUrl: 'getBaseUrl',
             getCurrentStock: 'stock/getCurrentStock',
             getStockData: 'stock/getStockData',
@@ -85,14 +85,14 @@ export default {
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
                     return reject(new Error('No Api Token'))
                 }
 
                 this.loadingData = true
 
                 const params = {
-                    access_key: this.getApiToken,
+                    access_key: this.getStockApiToken,
                     exchange: this.getExchange.mic,
                     sort: 'ASC',
                     limit: 1000

@@ -37,7 +37,7 @@ export default {
     },
     computed: {
         ...mapGetters({
-            getApiToken: 'getApiToken',
+            getStockApiToken: 'getStockApiToken',
             getBaseUrl: 'getBaseUrl',
             getAllExchanges: 'stock/getAllExchanges',
             getExchange: 'stock/getExchange',
@@ -45,7 +45,7 @@ export default {
         })
     },
     watch: {
-        async getApiToken() {
+        async getStockApiToken() {
             // Fetcht neue Daten wenn Token geändert wird
             this.loadingData = true
             await this.fetchExchanges().catch((err) => {
@@ -67,7 +67,7 @@ export default {
         if (process.client) {
             // Ermittelt Token aus LocalStorage und speichert im Store
             if (localStorage.getItem('apiToken')) {
-                this.setApiToken(localStorage.getItem('apiToken'))
+                this.setStockApiToken(localStorage.getItem('apiToken'))
             }
 
             // Ermittelt Rapid Api Token aus LocalStorage und speichert im Store
@@ -83,7 +83,7 @@ export default {
         ...mapActions({
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
-            setApiToken: 'setApiToken',
+            setStockApiToken: 'setStockApiToken',
             setRapidApiToken: 'setRapidApiToken',
             setAllExchanges: 'stock/setAllExchanges',
             setExchange: 'stock/setExchange',
@@ -119,12 +119,12 @@ export default {
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
                     return reject(new Error('No Api Token'))
                 }
 
                 const params = {
-                    access_key: this.getApiToken,
+                    access_key: this.getStockApiToken,
                     limit: 1000
                 }
 
@@ -154,12 +154,12 @@ export default {
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getApiToken || this.getApiToken === 'null' || this.getApiToken === '') {
+                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
                     return reject(new Error('No Api Token'))
                 }
 
                 const params = {
-                    access_key: this.getApiToken,
+                    access_key: this.getStockApiToken,
                     limit: 1000
                 }
 

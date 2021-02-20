@@ -1,15 +1,15 @@
 // Root Store
 export const state = () => ({
     baseUrl: 'http://api.marketstack.com/v1',
-    apiToken: null,
+    stockApiToken: null,
     rapidBaseUrl: 'bing-news-search1.p.rapidapi.com',
     rapidApiToken: null
 })
 
 // Sync functions for setting data
 export const mutations = {
-    setApiToken: (state, payload) => {
-        state.apiToken = payload
+    setStockApiToken: (state, payload) => {
+        state.stockApiToken = payload
     },
     setRapidApiToken: (state, payload) => {
         state.rapidApiToken = payload
@@ -18,13 +18,13 @@ export const mutations = {
 
 // Async functions for setting data and calling mutations
 export const actions = {
-    setApiToken: (vuexContext, payload) => {
+    setStockApiToken: (vuexContext, payload) => {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
         if (process.browser) {
             const data = payload || ''
             localStorage.setItem('apiToken', data)
         }
-        vuexContext.commit('setApiToken', payload)
+        vuexContext.commit('setStockApiToken', payload)
     },
     setRapidApiToken: (vuexContext, payload) => {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
@@ -41,8 +41,8 @@ export const getters = {
     getBaseUrl: (state) => {
         return state.baseUrl
     },
-    getApiToken: (state) => {
-        return state.apiToken
+    getStockApiToken: (state) => {
+        return state.stockApiToken
     },
     getRapidBaseUrl: (state) => {
         return state.rapidBaseUrl
