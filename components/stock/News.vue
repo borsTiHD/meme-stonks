@@ -85,7 +85,7 @@ export default {
                 // News URL
                 const url = `https://${this.getRapidBaseUrl}/news/search`
                 const options = {
-                    params: {q: this.stockName, freshness: 'Day', textFormat: 'Raw', safeSearch: 'Off'},
+                    params: { q: this.stockName, freshness: 'Day', textFormat: 'Raw', safeSearch: 'Off' },
                     headers: {
                         'x-bingapis-sdk': 'true',
                         'x-rapidapi-key': this.getRapidApiToken,

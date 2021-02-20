@@ -42,7 +42,7 @@ export default {
             getAllExchanges: 'stock/getAllExchanges',
             getExchange: 'stock/getExchange',
             getStocks: 'stock/getStocks'
-        }),
+        })
     },
     watch: {
         async getApiToken() {
@@ -60,7 +60,7 @@ export default {
                 console.error(err)
             })
             this.loadingData = false
-        },
+        }
     },
     created() {
         // Client Side

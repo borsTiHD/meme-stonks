@@ -17,7 +17,7 @@
                                 clearable
                                 single-line
                                 outlined
-                            ></v-text-field>
+                            />
                         </v-col>
                     </v-row>
                     <v-row>
@@ -32,7 +32,7 @@
                                 clearable
                                 single-line
                                 outlined
-                            ></v-text-field>
+                            />
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -66,7 +66,7 @@
                         return-object
                         label="Which exchange are you looking for?"
                         solo-inverted
-                    ></v-autocomplete>
+                    />
                 </v-card-text>
 
                 <v-divider />

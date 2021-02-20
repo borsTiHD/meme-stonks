@@ -21,7 +21,7 @@
             return-object
             label="Which stock are you looking for?"
             solo-inverted
-        ></v-autocomplete>
+        />
         <v-spacer />
         <v-btn icon @click.stop="rightDrawer = !rightDrawer">
             <v-icon>mdi-cogs</v-icon>
@@ -35,7 +35,7 @@ import { mapGetters, mapActions } from 'vuex'
 import pkg from './../../package.json'
 export default {
     props: {
-        'fetching': {
+        fetching: {
             type: Boolean,
             default: false
         }
@@ -107,7 +107,7 @@ export default {
                 this.loading = false
             }, 500)
             */
-        },
+        }
     }
 }
 </script>

@@ -63,7 +63,7 @@ export default {
             // Ermittelt Data
             const length = data.length
             const firstData = data[0]
-            const lastData = data[length-1]
+            const lastData = data[length - 1]
 
             // Vergleicht 'Opening' mit 'Closing' Data
             if (firstData.open < lastData.close) {

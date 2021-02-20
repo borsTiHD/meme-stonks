@@ -32,7 +32,7 @@ export default {
                 maintainAspectRatio: false,
                 tooltips: {
                     mode: 'index',
-                    intersect: false,
+                    intersect: false
                 },
                 hover: {
                     mode: 'nearest',

@@ -91,7 +91,7 @@ export default {
             const data = this.stockData?.eod
             if (!Array.isArray(data)) return []
             const length = data.length
-            return data.slice(length-limit, length).map((v, index) => {
+            return data.slice(length - limit, length).map((v, index) => {
                 // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
                 if (index === 0) {
                     return v.open // Erstes Item bekommt Opening Wert!
@@ -112,7 +112,7 @@ export default {
             if (!Array.isArray(data)) return 0
 
             const length = data.length
-            const firstData = data[length-limit]
+            const firstData = data[length - limit]
             return firstData?.open
         },
         closingValue() {
@@ -120,7 +120,7 @@ export default {
             if (!Array.isArray(data)) return 0
 
             const length = data.length
-            const lastData = data[length-1]
+            const lastData = data[length - 1]
             return lastData?.close
         }
     }
