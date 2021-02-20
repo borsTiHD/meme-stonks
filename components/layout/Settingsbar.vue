@@ -1,51 +1,5 @@
 <template>
     <v-navigation-drawer v-model="rightDrawer" right temporary app>
-        <v-dialog v-model="apiTokenDialog" width="500">
-            <v-card>
-                <v-card-title class="headline">Set Api Token</v-card-title>
-
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="4">
-                            <v-subheader>Marketstack.com</v-subheader>
-                        </v-col>
-                        <v-col cols="8">
-                            <v-text-field
-                                v-model="token"
-                                label="Marketstack.com Api Key"
-                                :value="getApiToken"
-                                clearable
-                                single-line
-                                outlined
-                            />
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="4">
-                            <v-subheader>Rakuten Rapid API</v-subheader>
-                        </v-col>
-                        <v-col cols="8">
-                            <v-text-field
-                                v-model="rapidApiToken"
-                                label="english.api.rakuten.net Api Key"
-                                :value="getRapidApiToken"
-                                clearable
-                                single-line
-                                outlined
-                            />
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-
-                <v-divider />
-
-                <v-card-actions>
-                    <v-spacer />
-                    <v-btn color="primary" text @click="setToken">Set Token</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
         <v-dialog v-model="exchangeDialog" width="500">
             <v-card>
                 <v-card-title class="headline">Set Exchange</v-card-title>
@@ -100,12 +54,6 @@
                     {{ darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode' }}
                 </v-list-item-title>
             </v-list-item>
-            <v-list-item @click="changeApiToken">
-                <v-list-item-action>
-                    <v-icon>mdi-key-variant</v-icon>
-                </v-list-item-action>
-                <v-list-item-title>Set Api Token</v-list-item-title>
-            </v-list-item>
             <v-list-item @click="changeExchange">
                 <v-list-item-action>
                     <v-icon>mdi-home-edit</v-icon>
@@ -122,9 +70,6 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     data() {
         return {
-            apiTokenDialog: false,
-            token: '',
-            rapidApiToken: '',
             exchangeDialog: false,
             searchExchange: null,
             exchange: '',
@@ -163,13 +108,8 @@ export default {
         }
     },
     methods: {
-        ...mapGetters({
-            getApiToken: 'getApiToken',
-            getRapidApiToken: 'getRapidApiToken'
-        }),
         ...mapActions({
             setRightDrawer: 'layout/setRightDrawer',
-            setApiToken: 'setApiToken',
             setRapidApiToken: 'setRapidApiToken',
             setExchange: 'stock/setExchange'
         }),
@@ -179,18 +119,6 @@ export default {
             } else {
                 this.$vuetify.theme.dark = true
             }
-        },
-        changeApiToken() {
-            // Setzt aktuellen Tokens in Inputfelder
-            this.token = this.getApiToken()
-            this.rapidApiToken = this.getRapidApiToken()
-            this.apiTokenDialog = true
-        },
-        setToken() {
-            this.setApiToken(this.token)
-            this.setRapidApiToken(this.rapidApiToken)
-            this.apiTokenDialog = false
-            this.setRightDrawer(false)
         },
         changeExchange() {
             // Setzt aktuellen Token ins Inputfeld
