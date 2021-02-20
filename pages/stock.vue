@@ -35,6 +35,7 @@ export default {
         BigLineChart,
         News
     },
+    middleware: 'checkApiKey',
     data() {
         return {
             loadingData: false
