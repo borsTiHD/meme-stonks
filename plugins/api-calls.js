@@ -1,5 +1,20 @@
+// Error Message bei fehlendem API Key
+const MISSING_API_KEY = 'No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'
+
 export default ({ app }, inject) => {
     const apiCalls = {
+        /**
+         * getStockApiKey() : Ermittelt API Key für Stock Abfragen
+         * @returns     {string|boolean}    -> API Key, oder false
+         */
+        getStockApiKey() {
+            const stockApiToken = app.store.getters.getStockApiToken
+            if (!stockApiToken || stockApiToken === 'null' || stockApiToken === 'undefined' || stockApiToken === '') {
+                return false
+            }
+            return stockApiToken
+        },
+
         /**
          * fetchExchanges() : Fetcht verfügbare Börsen
          */
@@ -9,16 +24,16 @@ export default ({ app }, inject) => {
 
                 // Ermittelt Daten
                 const exchanges = app.store.getters['stock/getAllExchanges']
-                const stockApiToken = app.store.getters.getStockApiToken
+                const stockApiToken = this.getStockApiKey()
 
                 // Gibt es bereits Exchanges, brauchen die nicht erneut gefetcht werden
                 if (Array.isArray(exchanges && exchanges.length > 0)) {
-                    return reject(new Error('Data Exists'))
+                    return resolve(true)
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!stockApiToken || stockApiToken === 'null' || stockApiToken === '') {
-                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'))
+                if (!stockApiToken) {
+                    return reject(new Error(MISSING_API_KEY))
                 }
 
                 // Parameter für API Call
@@ -62,7 +77,7 @@ export default ({ app }, inject) => {
 
                 // Ermittelt Daten
                 const stocks = app.store.getters['stock/getStocks']
-                const stockApiToken = app.store.getters.getStockApiToken
+                const stockApiToken = this.getStockApiKey()
 
                 // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
                 if (Array.isArray(stocks && stocks.length > 0)) {
@@ -70,8 +85,8 @@ export default ({ app }, inject) => {
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!stockApiToken || stockApiToken === 'null' || stockApiToken === '') {
-                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'))
+                if (!stockApiToken) {
+                    return reject(new Error(MISSING_API_KEY))
                 }
 
                 // Parameter für API Call
@@ -108,7 +123,7 @@ export default ({ app }, inject) => {
 
                 // Ermittelt Daten
                 const currentStock = app.store.getters['stock/getCurrentStock']
-                const stockApiToken = app.store.getters.getStockApiToken
+                const stockApiToken = this.getStockApiKey()
                 const exchange = app.store.getters['stock/getExchange']
 
                 // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
@@ -123,8 +138,8 @@ export default ({ app }, inject) => {
                 }
 
                 // Kein ApiToken -> KEIN FETCHING!
-                if (!stockApiToken || stockApiToken === 'null' || stockApiToken === '') {
-                    return reject(new Error('No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'))
+                if (!stockApiToken) {
+                    return reject(new Error(MISSING_API_KEY))
                 }
 
                 // Parameter für API Call
