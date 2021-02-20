@@ -77,6 +77,11 @@ export default {
 
             // Fetcht Daten -> werden auch über Watch gefetcht.
             // this.fetchData()
+
+            // Setzt Container Größe
+            setImmediate(() => {
+                this.onResize()
+            })
         }
     },
     methods: {
