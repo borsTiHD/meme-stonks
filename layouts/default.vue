@@ -38,17 +38,14 @@ export default {
     computed: {
         ...mapGetters({
             getStockApiToken: 'getStockApiToken',
-            getStockBaseUrl: 'getStockBaseUrl',
-            getAllExchanges: 'stock/getAllExchanges',
-            getExchange: 'stock/getExchange',
-            getStocks: 'stock/getStocks'
+            getExchange: 'stock/getExchange'
         })
     },
     watch: {
         async getStockApiToken() {
             // Fetcht neue Daten wenn Token geändert wird
             this.loadingData = true
-            await this.fetchExchanges().catch((err) => {
+            await this.$apiCalls.fetchExchanges().catch((err) => {
                 console.error(err)
             })
             this.loadingData = false
@@ -56,7 +53,7 @@ export default {
         async getExchange() {
             // Fetcht neue Daten wenn Exchange geändert wird
             this.loadingData = true
-            await this.fetchStocks().catch((err) => {
+            await this.$apiCalls.fetchStocks().catch((err) => {
                 console.error(err)
             })
             this.loadingData = false
@@ -94,112 +91,28 @@ export default {
     },
     methods: {
         ...mapActions({
-            setDrawer: 'layout/setDrawer',
-            setRightDrawer: 'layout/setRightDrawer',
             setStockApiToken: 'setStockApiToken',
             setStockApiTokenPremium: 'setStockApiTokenPremium',
-            setRapidApiToken: 'setRapidApiToken',
-            setAllExchanges: 'stock/setAllExchanges',
-            setExchange: 'stock/setExchange',
-            setStocks: 'stock/setStocks',
-            setCurrentStock: 'stock/setCurrentStock'
+            setRapidApiToken: 'setRapidApiToken'
         }),
         async fetchData() {
             this.loadingData = true
 
             // Fetcht verfügbare Börsen
-            await this.fetchExchanges().catch((err) => {
+            await this.$apiCalls.fetchExchanges().catch((err) => {
                 console.error(err)
                 this.loadingData = false
                 return false
             })
 
             // Fetcht verfügbare Aktien
-            await this.fetchStocks().catch((err) => {
+            await this.$apiCalls.fetchStocks().catch((err) => {
                 console.error(err)
                 this.loadingData = false
                 return false
             })
 
             this.loadingData = false
-        },
-        fetchStocks() {
-            return new Promise((resolve, reject) => {
-                console.log('[App] -> Fetching Stocks')
-
-                // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
-                if (Array.isArray(this.getStocks && this.getStocks.length > 0)) {
-                    return resolve(true)
-                }
-
-                // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
-                    return reject(new Error('No Api Token'))
-                }
-
-                const params = {
-                    access_key: this.getStockApiToken,
-                    limit: 1000
-                }
-
-                // Ermittelt Verfügbare Stock eines Exchanges
-                const url = `${this.getStockBaseUrl}/exchanges/${this.getExchange.mic}/tickers`
-                this.$axios.get(url, { params })
-                    .then((response) => {
-                        const data = response.data.data.tickers
-                        console.log('[App] -> All Stocks:', data)
-                        this.setStocks(data) // Setzt Stocks
-                        this.setCurrentStock(null) // Setzt aktive Aktie ggf. zurück
-                    }).catch((error) => {
-                        console.log(error)
-                        return reject(error)
-                    }).finally(() => {
-                        return resolve(true)
-                    })
-            })
-        },
-        async fetchExchanges() {
-            return new Promise((resolve, reject) => {
-                console.log('[App] -> Fetching Exchanges')
-
-                // Gibt es bereits Exchanges, brauchen die nicht erneut gefetcht werden
-                if (Array.isArray(this.getAllExchanges && this.getAllExchanges.length > 0)) {
-                    return reject(new Error('Data Exists'))
-                }
-
-                // Kein ApiToken -> KEIN FETCHING!
-                if (!this.getStockApiToken || this.getStockApiToken === 'null' || this.getStockApiToken === '') {
-                    return reject(new Error('No Api Token'))
-                }
-
-                const params = {
-                    access_key: this.getStockApiToken,
-                    limit: 1000
-                }
-
-                // Ermittelt Alle Exchanges
-                const url = `${this.getStockBaseUrl}/exchanges`
-                this.$axios.get(url, { params })
-                    .then((response) => {
-                        // Setzt Exchange Data
-                        const data = response.data.data
-                        console.log('[App] -> All Exchanges:', data)
-                        this.setAllExchanges(data)
-
-                        // Setzt default Exchange falls vorhanden aus LocalStorage
-                        let defaultExchange = data.find((data) => data.acronym === 'XSTU') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
-                        if (process.client && localStorage.getItem('currentExchange')) {
-                            const localExchange = localStorage.getItem('currentExchange')
-                            defaultExchange = JSON.parse(localExchange)
-                        }
-                        this.setExchange(defaultExchange)
-                    }).catch((error) => {
-                        console.log(error)
-                        return reject(error)
-                    }).finally(() => {
-                        return resolve(true)
-                    })
-            })
         },
         async onResize() {
             // Setzt Container Höhe für Footer
