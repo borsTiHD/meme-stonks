@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import moment from 'moment'
 import { mapGetters } from 'vuex'
 import PercentageSheet from '~/components/display/PercentageSheet.vue'
 
@@ -86,12 +87,44 @@ export default {
         }
     },
     methods: {
-        stockValue() {
-            const limit = this.days
+        filteredData() {
+            // Wochentag zur Berechnung Anzahl Tage
+            const weekDay = moment(Date.now()).isoWeekday()
+            let days = null
+
+            // Auswahl 2 Tage oder weniger wird der Wochentag geprüft
+            // Daruch erhält man Samstags und Sonntags die Daten von "Do-Fr"
+            if (this.days <= 2 && weekDay === 6) {
+                // Samstag
+                days = 2
+            } else if (weekDay === 7) {
+                // Sonntag
+                days = 3
+            } else {
+                // Montag bis Freitag
+                days = this.days - 1 // Auswahl minus 1 Tag, weil der Heutige Tag mit dazu zählt
+            }
+
+            // Ermittelt Start- und Enddatum, sowie Stock Daten
+            const startDate = moment(Date.now()).subtract(days, 'days').format('YYYY-MM-DD')
+            const endDate = moment(Date.now()).format('YYYY-MM-DD')
             const data = this.stockData?.eod
-            if (!Array.isArray(data)) return []
+
+            // Filtert Daten herraus, die sich innerhalb des gesetzten Zeitraums befinden
+            if (!data) return []
+            return data.filter((eod) => {
+                // moment('2016-10-30').isBetween('2016-10-30', '2016-10-30', undefined, '[]')
+                // const dateCheck = moment(eod?.date).isBetween(startDate, endDate, undefined, '[]')
+                // console.log('Check:', dateCheck)
+                return moment(eod?.date).isBetween(startDate, endDate, undefined, '[]')
+            })
+        },
+        stockValue() {
+            const data = this.filteredData()
+            console.log('Filtered Data:', data)
             const length = data.length
-            return data.slice(length - limit, length).map((v, index) => {
+            if (!Array.isArray(data) || length === 0) return []
+            return data.map((v, index) => {
                 // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
                 if (index === 0) {
                     return v.open // Erstes Item bekommt Opening Wert!
@@ -99,29 +132,24 @@ export default {
                 return v.close // Jeder nachfolgende Tage bekommt Closing Wert
             })
         },
+        openingValue() {
+            const data = this.filteredData()
+            const length = data.length
+            if (!Array.isArray(data) || length === 0) return 0
+            return data[0]?.open || 0
+        },
+        closingValue() {
+            const data = this.filteredData()
+            const length = data.length
+            if (!Array.isArray(data) || length === 0) return 0
+            return data[length - 1]?.close || 0
+        },
         color() {
             if (this.openingValue() === 0 && this.closingValue() === 0) return ''
             if (this.openingValue() < this.closingValue()) {
                 return 'green'
             }
             return 'red'
-        },
-        openingValue() {
-            const limit = this.days
-            const data = this.stockData?.eod
-            if (!Array.isArray(data)) return 0
-
-            const length = data.length
-            const firstData = data[length - limit]
-            return firstData?.open
-        },
-        closingValue() {
-            const data = this.stockData?.eod
-            if (!Array.isArray(data)) return 0
-
-            const length = data.length
-            const lastData = data[length - 1]
-            return lastData?.close
         }
     }
 }
