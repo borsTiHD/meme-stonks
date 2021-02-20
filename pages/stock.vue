@@ -44,7 +44,7 @@ export default {
     computed: {
         ...mapGetters({
             getStockApiToken: 'getStockApiToken',
-            getBaseUrl: 'getBaseUrl',
+            getStockBaseUrl: 'getStockBaseUrl',
             getCurrentStock: 'stock/getCurrentStock',
             getStockData: 'stock/getStockData',
             getExchange: 'stock/getExchange'
@@ -99,7 +99,7 @@ export default {
                 }
 
                 const symbol = this.getCurrentStock.symbol
-                const url = `${this.getBaseUrl}/tickers/${symbol}/eod`
+                const url = `${this.getStockBaseUrl}/tickers/${symbol}/eod`
 
                 this.$axios.get(url, { params })
                     .then((res) => {

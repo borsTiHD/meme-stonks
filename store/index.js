@@ -1,7 +1,8 @@
 // Root Store
 export const state = () => ({
-    baseUrl: 'http://api.marketstack.com/v1',
+    stockBaseUrl: 'api.marketstack.com/v1',
     stockApiToken: null,
+    stockApiTokenPremium: false,
     rapidBaseUrl: 'bing-news-search1.p.rapidapi.com',
     rapidApiToken: null
 })
@@ -10,6 +11,9 @@ export const state = () => ({
 export const mutations = {
     setStockApiToken: (state, payload) => {
         state.stockApiToken = payload
+    },
+    setStockApiTokenPremium: (state, payload) => {
+        state.stockApiTokenPremium = payload
     },
     setRapidApiToken: (state, payload) => {
         state.rapidApiToken = payload
@@ -22,9 +26,17 @@ export const actions = {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
         if (process.browser) {
             const data = payload || ''
-            localStorage.setItem('apiToken', data)
+            localStorage.setItem('stockApiToken', data)
         }
         vuexContext.commit('setStockApiToken', payload)
+    },
+    setStockApiTokenPremium: (vuexContext, payload) => {
+        // Speichert auf Clientseite den Token zusätzlich im Localstorage
+        if (process.browser) {
+            const data = payload || ''
+            localStorage.setItem('stockApiTokenPremium', data)
+        }
+        vuexContext.commit('setStockApiTokenPremium', payload)
     },
     setRapidApiToken: (vuexContext, payload) => {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
@@ -38,8 +50,15 @@ export const actions = {
 
 // Getting computed data
 export const getters = {
-    getBaseUrl: (state) => {
-        return state.baseUrl
+    getStockBaseUrl: (state) => {
+        if (state.stockApiTokenPremium) {
+            return `https://${state.stockBaseUrl}`
+        } else {
+            return `http://${state.stockBaseUrl}`
+        }
+    },
+    getStockApiTokenPremium: (state) => {
+        return state.stockApiTokenPremium
     },
     getStockApiToken: (state) => {
         return state.stockApiToken

@@ -38,7 +38,7 @@ export default {
     computed: {
         ...mapGetters({
             getStockApiToken: 'getStockApiToken',
-            getBaseUrl: 'getBaseUrl',
+            getStockBaseUrl: 'getStockBaseUrl',
             getAllExchanges: 'stock/getAllExchanges',
             getExchange: 'stock/getExchange',
             getStocks: 'stock/getStocks'
@@ -66,7 +66,7 @@ export default {
         // Client Side
         if (process.client) {
             // Ermittelt Token aus LocalStorage und speichert im Store
-            if (localStorage.getItem('apiToken')) {
+            if (localStorage.getItem('stockApiToken')) {
                 this.setStockApiToken(localStorage.getItem('apiToken'))
             }
 
@@ -134,7 +134,7 @@ export default {
                 }
 
                 // Ermittelt Verfügbare Stock eines Exchanges
-                const url = `${this.getBaseUrl}/exchanges/${this.getExchange.mic}/tickers`
+                const url = `${this.getStockBaseUrl}/exchanges/${this.getExchange.mic}/tickers`
                 this.$axios.get(url, { params })
                     .then((response) => {
                         const data = response.data.data.tickers
@@ -169,7 +169,7 @@ export default {
                 }
 
                 // Ermittelt Alle Exchanges
-                const url = `${this.getBaseUrl}/exchanges`
+                const url = `${this.getStockBaseUrl}/exchanges`
                 this.$axios.get(url, { params })
                     .then((response) => {
                         // Setzt Exchange Data
