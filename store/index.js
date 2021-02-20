@@ -21,14 +21,16 @@ export const actions = {
     setApiToken: (vuexContext, payload) => {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
         if (process.browser) {
-            localStorage.setItem('apiToken', payload)
+            const data = payload || ''
+            localStorage.setItem('apiToken', data)
         }
         vuexContext.commit('setApiToken', payload)
     },
     setRapidApiToken: (vuexContext, payload) => {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
         if (process.browser) {
-            localStorage.setItem('rapidApiToken', payload)
+            const data = payload || ''
+            localStorage.setItem('rapidApiToken', data)
         }
         vuexContext.commit('setRapidApiToken', payload)
     }

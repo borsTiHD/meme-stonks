@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row justify="center" align="center">
-            <v-col cols="12" md="6">
+            <v-col cols="12" sm="8" md="6">
                 <v-card>
                     <v-card-title class="headline">Set Api Token</v-card-title>
                     <v-card-text>
@@ -45,7 +45,7 @@
             </v-col>
         </v-row>
         <v-row justify="center" align="center">
-            <v-col cols="12" md="6">
+            <v-col cols="12" sm="8" md="6">
                 <v-card><v-card>
                     <v-card-title class="headline">Set Exchange</v-card-title>
 
