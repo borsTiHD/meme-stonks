@@ -113,15 +113,11 @@ export default {
             // Filtert Daten herraus, die sich innerhalb des gesetzten Zeitraums befinden
             if (!data) return []
             return data.filter((eod) => {
-                // moment('2016-10-30').isBetween('2016-10-30', '2016-10-30', undefined, '[]')
-                // const dateCheck = moment(eod?.date).isBetween(startDate, endDate, undefined, '[]')
-                // console.log('Check:', dateCheck)
                 return moment(eod?.date).isBetween(startDate, endDate, undefined, '[]')
             })
         },
         stockValue() {
             const data = this.filteredData()
-            console.log('Filtered Data:', data)
             const length = data.length
             if (!Array.isArray(data) || length === 0) return []
             return data.map((v, index) => {
