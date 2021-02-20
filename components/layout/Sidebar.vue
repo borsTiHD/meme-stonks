@@ -39,6 +39,11 @@ export default {
                     icon: 'mdi-note-text-outline',
                     title: 'Stock',
                     to: '/stock'
+                },
+                {
+                    icon: 'mdi-cogs',
+                    title: 'Settings',
+                    to: '/settings'
                 }
             ]
         }
