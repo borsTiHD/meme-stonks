@@ -39,18 +39,42 @@
 
                     <v-card-actions>
                         <v-spacer />
-                        <v-btn color="primary" text @click="setToken">Set Token</v-btn>
+                        <v-btn color="primary" text @click="setTokens">Set Tokens</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
         <v-row justify="center" align="center">
             <v-col cols="12" md="6">
-                <v-card>
-                    <v-card-title class="headline">Exchange</v-card-title>
+                <v-card><v-card>
+                    <v-card-title class="headline">Set Exchange</v-card-title>
+
                     <v-card-text>
-                        <p>BÖRSE AUSWAHL</p>
+                        <v-autocomplete
+                            v-model="selectedExchange"
+                            :items="exchangeList"
+                            :search-input.sync="searchExchange"
+                            cache-items
+                            clearable
+                            class="mx-4"
+                            flat
+                            hide-no-data
+                            hide-details
+                            item-text="name"
+                            item-value="mic"
+                            return-object
+                            label="Which exchange are you looking for?"
+                            solo-inverted
+                        />
                     </v-card-text>
+
+                    <v-divider />
+
+                    <v-card-actions>
+                        <v-spacer />
+                        <v-btn color="primary" text @click="submitExchange">Set Exchange</v-btn>
+                    </v-card-actions>
+                </v-card>
                 </v-card>
             </v-col>
         </v-row>
@@ -64,15 +88,30 @@ export default {
     data() {
         return {
             stockApiToken: '',
-            rapidApiToken: ''
+            rapidApiToken: '',
+            searchExchange: null,
+            exchange: '',
+            exchangeList: []
         }
     },
     computed: {
         ...mapGetters({
-            getRightDrawer: 'layout/getRightDrawer',
             getAllExchanges: 'stock/getAllExchanges',
             getExchange: 'stock/getExchange'
-        })
+        }),
+        selectedExchange: {
+            get() {
+                return this.getExchange
+            },
+            set(value) {
+                this.exchange = value
+            }
+        }
+    },
+    watch: {
+        searchExchange(val) {
+            val && val !== this.selectedExchange && this.exchangeQuerySelections(val)
+        }
     },
     created() {
         this.loadData()
@@ -87,16 +126,30 @@ export default {
         }),
         ...mapActions({
             setApiToken: 'setApiToken',
-            setRapidApiToken: 'setRapidApiToken'
+            setRapidApiToken: 'setRapidApiToken',
+            setExchange: 'stock/setExchange'
         }),
         loadData() {
             // Setzt aktuellen Tokens in Inputfelder
             this.stockApiToken = this.getApiToken()
             this.rapidApiToken = this.getRapidApiToken()
+
+            // Setzt ggf. gespeicherten Exchange in Suche
+            this.searchExchange = this.getExchange?.name
         },
-        setToken() {
+        setTokens() {
             this.setApiToken(this.stockApiToken)
             this.setRapidApiToken(this.rapidApiToken)
+        },
+        exchangeQuerySelections(v) {
+            this.loading = true
+            this.exchangeList = this.getAllExchanges.filter((e) => {
+                return (e.name || '').toLowerCase().includes((v || '').toLowerCase())
+            })
+            this.loading = false
+        },
+        submitExchange() {
+            this.setExchange(this.exchange)
         }
     }
 }
