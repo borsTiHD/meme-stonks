@@ -7,36 +7,18 @@ module.exports = {
     parserOptions: {
         parser: 'babel-eslint'
     },
-    extends: ['@nuxtjs', 'prettier', 'prettier/vue', 'plugin:prettier/recommended', 'plugin:nuxt/recommended'],
-    plugins: ['prettier'],
+    extends: ['@nuxtjs', 'plugin:nuxt/recommended'],
     // add your custom rules here
     rules: {
-        indent: [
-            'error',
-            4,
-            {
-                outerIIFEBody: 1,
-                ignoredNodes: ['TemplateLiteral'],
-                SwitchCase: 1
-            }
-        ], // 4 spaces – for indentation
-        'prettier/prettier': [
-            'error',
-            {
-                printWidth: 120,
-                singleQuote: true,
-                semi: false,
-                trailingComma: 'none',
-                tabWidth: 4,
-                useTabs: false,
-                quoteProps: 'as-needed',
-                bracketSpacing: true,
-                jsxBracketSameLine: false,
-                arrowParens: 'always',
-                endOfLine: 'crlf',
-                embeddedLanguageFormatting: 'off'
-            }
+        indent: ['error', 4, {
+            ignoredNodes: ['TemplateLiteral'],
+            SwitchCase: 1
+        }
         ],
+        quotes: ['error', 'single'],
+        semi: ['error', 'never'],
+        'comma-dangle': ['error', 'never'],
+        'linebreak-style': ['error', 'windows'],
         'template-curly-spacing': 'off',
         'max-len': ['off', { code: 120 }],
         'no-console': 'off',
@@ -55,16 +37,13 @@ module.exports = {
         'vue/singleline-html-element-content-newline': 'off',
         'vue/multiline-html-element-content-newline': 'off',
 
-        'vue/html-indent': [
-            'error',
-            4,
-            {
-                attribute: 1,
-                baseIndent: 1,
-                closeBracket: 0,
-                alignAttributesVertically: true,
-                ignores: []
-            }
+        'vue/html-indent': ['error', 4, {
+            attribute: 1,
+            baseIndent: 1,
+            closeBracket: 0,
+            alignAttributesVertically: true,
+            ignores: []
+        }
         ],
 
         'vue/no-v-html': 'off'
