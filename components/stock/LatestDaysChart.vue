@@ -97,7 +97,7 @@ export default {
             if (this.days <= 2 && weekDay === 6) {
                 // Samstag
                 days = 2
-            } else if (weekDay === 7) {
+            } else if (this.days <= 2 && weekDay === 7) {
                 // Sonntag
                 days = 3
             } else {
@@ -118,6 +118,7 @@ export default {
         },
         stockValue() {
             const data = this.filteredData()
+            console.log('data', data)
             const length = data.length
             if (!Array.isArray(data) || length === 0) return []
             return data.map((v, index) => {
