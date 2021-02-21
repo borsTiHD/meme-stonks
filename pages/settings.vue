@@ -152,6 +152,11 @@ export default {
     watch: {
         searchExchange(val) {
             val && val !== this.selectedExchange && this.exchangeQuerySelections(val)
+        },
+        getExchange() {
+            // Wurde ein API Key gesetzt, bewirkt die Beobachtung das Setzen der Börse in der Auswahl
+            this.exchangeList = this.getAllExchanges
+            this.selectedExchange = this.getExchange
         }
     },
     created() {

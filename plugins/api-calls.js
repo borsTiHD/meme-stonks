@@ -53,7 +53,7 @@ export default ({ app }, inject) => {
                         app.store.dispatch('stock/setAllExchanges', data) // Setzt Store
 
                         // Setzt default Exchange falls vorhanden aus LocalStorage
-                        let defaultExchange = data.find((data) => data.acronym === 'XSTU') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
+                        let defaultExchange = data.find((data) => data.acronym === 'XNAS') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
                         if (process.client && localStorage.getItem('currentExchange')) {
                             const localExchange = localStorage.getItem('currentExchange')
                             defaultExchange = JSON.parse(localExchange)
