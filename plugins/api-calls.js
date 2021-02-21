@@ -53,7 +53,7 @@ export default ({ app }, inject) => {
                         app.store.dispatch('stock/setAllExchanges', data) // Setzt Store
 
                         // Setzt default Exchange falls vorhanden aus LocalStorage
-                        let defaultExchange = data.find((data) => data.acronym === 'XNAS') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNAS) NASDAQ Stock Exchange
+                        let defaultExchange = data.find((data) => data.acronym === 'XNYS') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse, (XNYS) New York Stock Exchange, (XNAS) NASDAQ Stock Exchange
                         if (process.client && localStorage.getItem('currentExchange')) {
                             const localExchange = localStorage.getItem('currentExchange')
                             defaultExchange = JSON.parse(localExchange)
@@ -89,28 +89,52 @@ export default ({ app }, inject) => {
                     return reject(new Error(MISSING_API_KEY))
                 }
 
+                // Leer Store bevor Stocks abgefragt werden um alte Stocks zu löschen
+                app.store.dispatch('stock/clearStocks')
+
                 // Parameter für API Call
                 const params = {
                     access_key: stockApiToken,
-                    limit: 1000
+                    limit: 1000,
+                    offset: 0
                 }
 
                 // Ermittelt Verfügbare Stocks eines Exchanges
                 const baseUrl = app.store.getters.getStockBaseUrl
                 const exchange = app.store.getters['stock/getExchange']
                 const url = `${baseUrl}/exchanges/${exchange?.mic}/tickers`
-                app.$axios.get(url, { params })
-                    .then((response) => {
-                        const data = response.data.data.tickers
-                        console.log('[App] -> All Stocks:', data)
-                        app.store.dispatch('stock/setStocks', data) // Setzt Stocks
-                        app.store.dispatch('stock/setCurrentStock', null) // Setzt aktive Aktie ggf. zurück
-                    }).catch((error) => {
-                        console.log(error)
-                        return reject(error)
-                    }).finally(() => {
-                        return resolve(true)
-                    })
+
+                // Holt Stocks und ruft sich erneut auf, wenn Limit nicht erreicht wurde
+                const getStocks = (url, params) => {
+                    app.$axios.get(url, { params })
+                        .then((response) => {
+                            const data = response.data.data.tickers
+                            const pagination = response.data.pagination
+                            console.log('[App] -> Fetching Data - Pagination:', pagination)
+
+                            // Looped sämtliche Stocks durch
+                            app.store.dispatch('stock/addStocks', data) // Fügt Stocks hinzu
+                            app.store.dispatch('stock/setCurrentStock', null) // Setzt aktive Aktie ggf. zurück
+
+                            // Prüft ob alle Stocks abgefragt wurden, wenn nicht, wird ein weiterer Call gestartet
+                            const offset = pagination.offset += pagination.count // Setzt neuen Offset aus Anzahl an Ergebnissen des vorherigen Calls
+                            if (offset >= pagination.total) {
+                                const stocks = app.store.getters['stock/getStocks']
+                                console.log('[App] -> Stocks:', stocks)
+                                return resolve(true)
+                            } else {
+                                getStocks(url, {
+                                    access_key: stockApiToken,
+                                    limit: 1000,
+                                    offset // Ändert gesetzt Offset aus vorheriger Abfrage
+                                })
+                            }
+                        }).catch((error) => {
+                            console.log(error)
+                            return reject(error)
+                        })
+                }
+                getStocks(url, params)
             })
         },
 

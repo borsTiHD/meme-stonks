@@ -18,8 +18,14 @@ export const mutations = {
     setCurrentStock: (state, payload) => {
         state.currentStock = payload
     },
+    clearStocks: (state) => {
+        state.stocks = []
+    },
     setStocks: (state, payload) => {
         state.stocks = payload
+    },
+    addStocks: (state, payload) => {
+        state.stocks.push(...payload)
     },
     addStockData: (state, payload) => {
         // NICHT diese Mutation ausführen, sondern die gleichnamige ACTION!!!
@@ -46,8 +52,14 @@ export const actions = {
     setCurrentStock: (vuexContext, payload) => {
         vuexContext.commit('setCurrentStock', payload)
     },
+    clearStocks: (vuexContext) => {
+        vuexContext.commit('clearStocks')
+    },
     setStocks: (vuexContext, payload) => {
         vuexContext.commit('setStocks', payload)
+    },
+    addStocks: (vuexContext, payload) => {
+        vuexContext.commit('addStocks', payload)
     },
     addStockData: ({ commit, dispatch, state }, payload) => {
         // Prüft ob StockData bereits gespeichert wurde

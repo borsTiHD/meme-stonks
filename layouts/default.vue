@@ -1,6 +1,6 @@
 <template>
     <v-app v-resize="onResize" dark>
-        <app-header :fetching="loadingData" />
+        <app-header :fetching="loadingExchanges || loadingStocks" />
         <app-sidebar />
         <app-settingsbar />
 
@@ -34,7 +34,8 @@ export default {
     },
     data() {
         return {
-            loadingData: false,
+            loadingExchanges: false,
+            loadingStocks: false,
             containerHeight: 0
         }
     },
@@ -47,19 +48,19 @@ export default {
     watch: {
         async getStockApiToken() {
             // Fetcht neue Daten wenn Token geändert wird
-            this.loadingData = true
+            this.loadingExchanges = true
             await this.$apiCalls.fetchExchanges().catch((err) => {
                 console.error(err)
             })
-            this.loadingData = false
+            this.loadingExchanges = false
         },
         async getExchange() {
             // Fetcht neue Daten wenn Exchange geändert wird
-            this.loadingData = true
+            this.loadingStocks = true
             await this.$apiCalls.fetchStocks().catch((err) => {
                 console.error(err)
             })
-            this.loadingData = false
+            this.loadingStocks = false
         }
     },
     created() {
@@ -99,23 +100,22 @@ export default {
             setRapidApiToken: 'setRapidApiToken'
         }),
         async fetchData() {
-            this.loadingData = true
+            this.loadingExchanges = true
+            this.loadingStocks = true
 
             // Fetcht verfügbare Börsen
             await this.$apiCalls.fetchExchanges().catch((err) => {
                 console.error(err)
-                this.loadingData = false
+                this.loadingExchanges = false
                 return false
             })
 
             // Fetcht verfügbare Aktien
             await this.$apiCalls.fetchStocks().catch((err) => {
                 console.error(err)
-                this.loadingData = false
+                this.loadingStocks = false
                 return false
             })
-
-            this.loadingData = false
         },
         async onResize() {
             // Setzt Container Höhe für Footer
