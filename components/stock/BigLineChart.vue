@@ -12,7 +12,73 @@
         </v-card-text>
 
         <v-card-text>
-            <div class="display-1 font-weight-thin">Last Year Performance</div>
+            <v-row dense>
+                <v-col class="pb-0">
+                    <div class="d-flex">
+                        <div class="align-self-center mr-auto display-1 font-weight-thin">Last Year Performance</div>
+                        <div class="align-self-center">
+                            <v-menu
+                                ref="startDate"
+                                v-model="startDate.dateMenu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                            >
+                                <template #activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="startDate.date"
+                                        label="Start Date"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    />
+                                </template>
+                                <v-date-picker
+                                    v-model="startDate.date"
+                                    no-title
+                                    scrollable
+                                    :min="minDate"
+                                    :max="maxDate"
+                                    @input="startDate.dateMenu = false"
+                                />
+                            </v-menu>
+                        </div>
+                        <div class="align-self-center ml-2">
+                            <v-menu
+                                ref="endDate"
+                                v-model="endDate.dateMenu"
+                                :close-on-content-click="false"
+                                :nudge-right="40"
+                                transition="scale-transition"
+                                offset-y
+                                min-width="290px"
+                            >
+                                <template #activator="{ on, attrs }">
+                                    <v-text-field
+                                        v-model="endDate.date"
+                                        label="End Date"
+                                        prepend-icon="mdi-calendar"
+                                        readonly
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    />
+                                </template>
+                                <v-date-picker
+                                    v-model="endDate.date"
+                                    no-title
+                                    scrollable
+                                    :min="minDate"
+                                    :max="maxDate"
+                                    @input="endDate.dateMenu = false"
+                                />
+                            </v-menu>
+                        </div>
+                    </div>
+                </v-col>
+            </v-row>
         </v-card-text>
     </v-card>
 </template>
@@ -39,26 +105,45 @@ export default {
             default: false
         }
     },
+    data() {
+        return {
+            startDate: {
+                dateMenu: false,
+                date: null
+            },
+            endDate: {
+                dateMenu: false,
+                date: null
+            },
+            minDate: moment(new Date()).subtract(1, 'years').format('YYYY-MM-DD'),
+            maxDate: moment(new Date()).format('YYYY-MM-DD')
+        }
+    },
     computed: {
         stockValue() {
-            const data = this.stockData?.eod
-            if (!Array.isArray(data)) return []
+            const data = this.filteredData()
+
+            console.log('startDate', this.startDate.date)
+            console.log('endDate', this.endDate.date)
+            console.log('data', data)
+
+            if (!Array.isArray(data) || data.length === 0) return []
             return data.map((v) => {
                 // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
                 return v.close
             })
         },
         stockLabels() {
-            const data = this.stockData?.eod
-            if (!Array.isArray(data)) return []
+            const data = this.filteredData()
+            if (!Array.isArray(data) || data.length === 0) return []
             return data.map((v) => {
                 // return v.date
                 return moment(v.date).format('YYYY.MM.DD')
             })
         },
         chartColor() {
-            const data = this.stockData?.eod
-            if (!Array.isArray(data)) return { line: '#ffffffb3', bg: '#FFFFFF1A' }
+            const data = this.filteredData()
+            if (!Array.isArray(data) || data.length === 0) return { line: '#ffffffb3', bg: '#FFFFFF1A' }
 
             // Ermittelt Data
             const length = data.length
@@ -71,6 +156,25 @@ export default {
             } else {
                 return { line: '#cc2929', bg: '#cc29291A' } // 'bg' ist 10% transparency
             }
+        }
+    },
+    created() {
+        // Setzt Start- / Enddatum
+        this.startDate.date = moment(new Date()).subtract(1, 'years').format('YYYY-MM-DD')
+        this.endDate.date = moment(new Date()).format('YYYY-MM-DD')
+    },
+    methods: {
+        filteredData() {
+            // Start- und Enddatum, sowie Stock Daten
+            const startDate = this.startDate.date
+            const endDate = this.endDate.date
+            const data = this.stockData?.eod
+
+            // Filtert Daten herraus, die sich innerhalb des gesetzten Zeitraums befinden
+            if (!data || data.length === 0) return []
+            return data.filter((eod) => {
+                return moment(eod?.date).isBetween(startDate, endDate, undefined, '[]')
+            })
         }
     }
 }
