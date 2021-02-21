@@ -42,7 +42,7 @@
                                     scrollable
                                     :min="minDate"
                                     :max="maxDate"
-                                    @input="startDate.dateMenu = false"
+                                    @input="startDate.dateMenu = false; periodText = 'Custom'"
                                 />
                             </v-menu>
                         </div>
@@ -72,7 +72,7 @@
                                     scrollable
                                     :min="minDate"
                                     :max="maxDate"
-                                    @input="endDate.dateMenu = false"
+                                    @input="endDate.dateMenu = false; periodText = 'Custom'"
                                 />
                             </v-menu>
                         </div>
