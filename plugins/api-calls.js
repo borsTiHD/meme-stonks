@@ -110,7 +110,7 @@ export default ({ app, isDev }, inject) => {
                         .then((response) => {
                             const data = response.data.data.tickers
                             const pagination = response.data.pagination
-                            console.log('[App] -> Fetching Data - Pagination:', pagination)
+                            console.log('[App] -> Still Fetching Stocks > Pagination:', pagination)
 
                             // Looped sämtliche Stocks durch
                             app.store.dispatch('stock/addStocks', data) // Fügt Stocks hinzu
