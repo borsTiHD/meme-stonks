@@ -1,7 +1,7 @@
 // Error Message bei fehlendem API Key
 const MISSING_API_KEY = 'No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'
 
-export default ({ app }, inject) => {
+export default ({ app, isDev }, inject) => {
     const apiCalls = {
         /**
          * getStockApiKey() : Ermittelt API Key für Stock Abfragen
@@ -118,7 +118,7 @@ export default ({ app }, inject) => {
 
                             // Prüft ob alle Stocks abgefragt wurden, wenn nicht, wird ein weiterer Call gestartet
                             const offset = pagination.offset += pagination.count // Setzt neuen Offset aus Anzahl an Ergebnissen des vorherigen Calls
-                            if (offset >= pagination.total) {
+                            if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
                                 const stocks = app.store.getters['stock/getStocks']
                                 console.log('[App] -> Stocks:', stocks)
                                 return resolve(true)
