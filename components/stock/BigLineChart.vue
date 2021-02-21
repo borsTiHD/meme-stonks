@@ -1,5 +1,20 @@
 <template>
     <v-card class="flex d-flex flex-column">
+        <v-card-text v-if="!loadingData">
+            <div class="d-flex">
+                <div class="align-self-center mr-auto display-1 font-weight-thin">{{ performanceText }}</div>
+
+                <div v-if="openingValue !== 0 && closingValue !== 0" class="align-self-center text-subtitle-1">
+                    <span>Closing:</span>
+                    <span class="mr-4">{{ closingValue + ' ' + currency }}</span>
+                </div>
+
+                <div v-if="openingValue !== 0 && closingValue !== 0" class="align-self-center">
+                    <percentage-sheet :opening-value="openingValue" :closing-value="closingValue" />
+                </div>
+            </div>
+        </v-card-text>
+
         <v-card-text>
             <v-progress-linear v-if="loadingData" indeterminate color="white" />
             <stock-line-chart
@@ -15,7 +30,6 @@
             <v-row dense>
                 <v-col class="pb-0">
                     <div class="d-flex">
-                        <div class="align-self-center mr-auto display-1 font-weight-thin">{{ performanceText }}</div>
                         <div class="align-self-center">
                             <v-menu
                                 ref="startDate"
@@ -92,11 +106,14 @@
 
 <script>
 import moment from 'moment'
+import { mapGetters } from 'vuex'
 import StockLineChart from '~/components/charts/StockLineChart.vue'
+import PercentageSheet from '~/components/display/PercentageSheet.vue'
 
 export default {
     components: {
-        StockLineChart
+        StockLineChart,
+        PercentageSheet
     },
     props: {
         stockData: {
@@ -128,6 +145,9 @@ export default {
         }
     },
     computed: {
+        ...mapGetters({
+            getExchange: 'stock/getExchange'
+        }),
         stockValue() {
             const data = this.filteredData()
             if (!Array.isArray(data) || data.length === 0) return []
@@ -159,6 +179,21 @@ export default {
             } else {
                 return { line: '#cc2929', bg: '#cc29291A' } // 'bg' ist 10% transparency
             }
+        },
+        openingValue() {
+            const data = this.filteredData()
+            const length = data.length
+            if (!Array.isArray(data) || length === 0) return 0
+            return data[0]?.open || 0
+        },
+        closingValue() {
+            const data = this.filteredData()
+            const length = data.length
+            if (!Array.isArray(data) || length === 0) return 0
+            return data[length - 1]?.close || 0
+        },
+        currency() {
+            return this.getExchange?.currency?.symbol || ''
         },
         performanceText() {
             return `Last ${this.periodText} Performance`
@@ -208,6 +243,13 @@ export default {
                     this.periodText = 'Year'
                     break
             }
+        },
+        color() {
+            if (this.openingValue === 0 && this.closingValue === 0) return ''
+            if (this.openingValue < this.closingValue) {
+                return 'green'
+            }
+            return 'red'
         }
     }
 }
