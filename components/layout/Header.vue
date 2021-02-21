@@ -9,8 +9,8 @@
             v-model="selectedStock"
             :loading="fetching ? true : loading"
             :disabled="fetching"
-            :items="items"
-            :search-input.sync="search"
+            :items="getStocks"
+            :filter="stockFilter"
             clearable
             class="mx-4"
             flat
@@ -21,7 +21,16 @@
             return-object
             label="Which stock are you looking for?"
             solo-inverted
-        />
+        >
+            <template slot="selection" slot-scope="data">
+                <!-- HTML that describe how select should render selected items -->
+                {{ data.item.name }} - {{ data.item.symbol }}
+            </template>
+            <template slot="item" slot-scope="data">
+                <!-- HTML that describe how select should render items when the select is open -->
+                {{ data.item.name }} - {{ data.item.symbol }}
+            </template>
+        </v-autocomplete>
         <v-spacer />
         <v-btn icon @click.stop="rightDrawer = !rightDrawer">
             <v-icon>mdi-cogs</v-icon>
@@ -43,9 +52,7 @@ export default {
     data() {
         return {
             title: `${pkg.productName}`,
-            loading: false,
-            items: [],
-            search: null
+            loading: false
         }
     },
     computed: {
@@ -80,33 +87,24 @@ export default {
             }
         }
     },
-    watch: {
-        search(val) {
-            val && val !== this.selectedStock && this.querySelections(val)
-        }
-    },
     methods: {
         ...mapActions({
             setDrawer: 'layout/setDrawer',
             setRightDrawer: 'layout/setRightDrawer',
             setCurrentStock: 'stock/setCurrentStock'
         }),
-        querySelections(v) {
-            this.loading = true
-            this.items = this.getStocks.filter((e) => {
-                return (e.name || '').toLowerCase().includes((v || '').toLowerCase())
-            })
-            this.loading = false
-
-            /*
-            // Simulated ajax query
-            setTimeout(() => {
-                this.items = this.stocks.filter((e) => {
-                    return (e.name || '').toLowerCase().includes((v || '').toLowerCase())
-                })
-                this.loading = false
-            }, 500)
-            */
+        loadData() {
+            // Setzt aktuelle Tokens in Inputfelder
+            this.stockApiToken = this.getStockApiToken()
+            this.stockApiPremiumCheckbox = this.getStockApiTokenPremium()
+            this.rapidApiToken = this.getRapidApiToken()
+        },
+        stockFilter(item, queryText, itemText) {
+            // Filtert welche Items im DropDown angezeigt werden sollen
+            const name = item.name.toLowerCase()
+            const symbol = item.symbol.toLowerCase()
+            const search = queryText.toLowerCase()
+            return name.includes(search) || symbol.includes(search)
         }
     }
 }

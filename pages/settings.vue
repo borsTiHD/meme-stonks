@@ -67,7 +67,7 @@
                     <v-card-text>
                         <v-autocomplete
                             v-model="selectedExchange"
-                            :items="exchangeList"
+                            :items="getAllExchanges"
                             :filter="exchangeFilter"
                             clearable
                             class="mx-4"
@@ -132,7 +132,6 @@ export default {
             stockApiPremiumCheckbox: false,
             rapidApiToken: '',
             exchange: '',
-            exchangeList: [],
             snackbar: {
                 show: false,
                 text: 'Lorem ipsum dolor sit amet',
@@ -159,7 +158,6 @@ export default {
     watch: {
         getExchange() {
             // Wurde ein API Key gesetzt, bewirkt die Beobachtung das Setzen der Börse in der Auswahl
-            this.exchangeList = this.getAllExchanges
             this.selectedExchange = this.getExchange
         }
     },
