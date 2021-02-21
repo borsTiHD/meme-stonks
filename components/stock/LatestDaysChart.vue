@@ -118,7 +118,6 @@ export default {
         },
         stockValue() {
             const data = this.filteredData()
-            console.log('data', data)
             const length = data.length
             if (!Array.isArray(data) || length === 0) return []
             return data.map((v, index) => {
