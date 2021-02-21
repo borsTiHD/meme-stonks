@@ -6,6 +6,7 @@
 
         <v-main>
             <v-container id="container" fluid :style="`height: ${containerHeight}px;`">
+                <app-alerts />
                 <nuxt keep-alive />
             </v-container>
         </v-main>
@@ -21,13 +22,15 @@ import AppHeader from '~/components/layout/Header.vue'
 import AppSidebar from '~/components/layout/Sidebar.vue'
 import AppSettingsbar from '~/components/layout/Settingsbar.vue'
 import AppFooter from '~/components/layout/Footer.vue'
+import AppAlerts from '~/components/alerts/Alerts'
 
 export default {
     components: {
         AppHeader,
         AppSidebar,
         AppSettingsbar,
-        AppFooter
+        AppFooter,
+        AppAlerts
     },
     data() {
         return {
