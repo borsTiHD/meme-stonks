@@ -93,6 +93,24 @@
                 </v-card>
             </v-col>
         </v-row>
+
+        <v-snackbar
+            v-model="snackbar.show"
+            :color="snackbar.color"
+            :elevation="snackbar.elevation"
+        >
+            {{ snackbar.text }}
+            <template #action="{ attrs }">
+                <v-btn
+                    :color="snackbar.btnColor"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar.show = false"
+                >
+                    Close
+                </v-btn>
+            </template>
+        </v-snackbar>
     </div>
 </template>
 
@@ -107,7 +125,14 @@ export default {
             rapidApiToken: '',
             searchExchange: null,
             exchange: '',
-            exchangeList: []
+            exchangeList: [],
+            snackbar: {
+                show: false,
+                text: 'Lorem ipsum dolor sit amet',
+                color: '',
+                btnColor: 'primary',
+                elevation: 24
+            }
         }
     },
     computed: {
@@ -160,6 +185,8 @@ export default {
             this.setStockApiToken(this.stockApiToken)
             this.setStockApiTokenPremium(this.stockApiPremiumCheckbox)
             this.setRapidApiToken(this.rapidApiToken)
+            this.snackbar.text = 'Set api keys...' // User Feedback
+            this.snackbar.show = true // User Feedback
         },
         exchangeQuerySelections(v) {
             this.loading = true
@@ -170,6 +197,8 @@ export default {
         },
         submitExchange() {
             this.setExchange(this.exchange)
+            this.snackbar.text = 'Set stock exchange...' // User Feedback
+            this.snackbar.show = true // User Feedback
         }
     }
 }
