@@ -68,8 +68,7 @@
                         <v-autocomplete
                             v-model="selectedExchange"
                             :items="exchangeList"
-                            :search-input.sync="searchExchange"
-                            cache-items
+                            :filter="exchangeFilter"
                             clearable
                             class="mx-4"
                             flat
@@ -80,7 +79,16 @@
                             return-object
                             label="Which exchange are you looking for?"
                             solo-inverted
-                        />
+                        >
+                            <template slot="selection" slot-scope="data">
+                                <!-- HTML that describe how select should render selected items -->
+                                {{ data.item.name }} - {{ data.item.mic }}
+                            </template>
+                            <template slot="item" slot-scope="data">
+                                <!-- HTML that describe how select should render items when the select is open -->
+                                {{ data.item.name }} - {{ data.item.mic }}
+                            </template>
+                        </v-autocomplete>
                     </v-card-text>
 
                     <v-divider />
@@ -123,7 +131,6 @@ export default {
             stockApiToken: '',
             stockApiPremiumCheckbox: false,
             rapidApiToken: '',
-            searchExchange: null,
             exchange: '',
             exchangeList: [],
             snackbar: {
@@ -150,9 +157,6 @@ export default {
         }
     },
     watch: {
-        searchExchange(val) {
-            val && val !== this.selectedExchange && this.exchangeQuerySelections(val)
-        },
         getExchange() {
             // Wurde ein API Key gesetzt, bewirkt die Beobachtung das Setzen der Börse in der Auswahl
             this.exchangeList = this.getAllExchanges
@@ -182,9 +186,6 @@ export default {
             this.stockApiToken = this.getStockApiToken()
             this.stockApiPremiumCheckbox = this.getStockApiTokenPremium()
             this.rapidApiToken = this.getRapidApiToken()
-
-            // Setzt ggf. gespeicherten Exchange in Suche
-            this.searchExchange = this.getExchange?.name
         },
         setTokens() {
             this.setStockApiToken(this.stockApiToken)
@@ -193,12 +194,12 @@ export default {
             this.snackbar.text = 'Set api keys...' // User Feedback
             this.snackbar.show = true // User Feedback
         },
-        exchangeQuerySelections(v) {
-            this.loading = true
-            this.exchangeList = this.getAllExchanges.filter((e) => {
-                return (e.name || '').toLowerCase().includes((v || '').toLowerCase())
-            })
-            this.loading = false
+        exchangeFilter(item, queryText, itemText) {
+            // Filtert welche Items im DropDown angezeigt werden sollen
+            const name = item.name.toLowerCase()
+            const mic = item.mic.toLowerCase()
+            const search = queryText.toLowerCase()
+            return name.includes(search) || mic.includes(search)
         },
         submitExchange() {
             this.setExchange(this.exchange)
