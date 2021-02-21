@@ -5,10 +5,12 @@ export default function(app) {
         if (!apiToken || apiToken === 'undefined' || apiToken === 'null' || apiToken === '') {
             console.log('[Middleware] >> API Key is NOT available:', apiToken)
 
-            // Erzeugt Alert
+            // Erzeugt Alert + Cleart ggf. vorhandene Alerts bzgl API Key
+            const alertGroup = 'apiKey'
+            app.store.commit('alerts/clearAlertsByGroup', alertGroup)
             app.store.commit('alerts/pushAlert', {
                 icon: 'mdi-information',
-                group: 'apiKey',
+                group: alertGroup,
                 border: 'left',
                 color: 'warning',
                 erasable: true,
