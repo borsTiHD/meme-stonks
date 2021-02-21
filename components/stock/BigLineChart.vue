@@ -15,7 +15,7 @@
             <v-row dense>
                 <v-col class="pb-0">
                     <div class="d-flex">
-                        <div class="align-self-center mr-auto display-1 font-weight-thin">Last Year Performance</div>
+                        <div class="align-self-center mr-auto display-1 font-weight-thin">{{ performanceText }}</div>
                         <div class="align-self-center">
                             <v-menu
                                 ref="startDate"
@@ -76,6 +76,13 @@
                                 />
                             </v-menu>
                         </div>
+                        <div class="align-self-center ml-2">
+                            <!-- <v-btn small outlined @click="changeDate(1, 'days')">1D</v-btn> -->
+                            <v-btn small outlined @click="changeDate(1, 'week')">1W</v-btn>
+                            <v-btn small outlined @click="changeDate(1, 'months')">1M</v-btn>
+                            <v-btn small outlined @click="changeDate(6, 'months')">6M</v-btn>
+                            <v-btn small outlined @click="changeDate(1, 'years')">1J</v-btn>
+                        </div>
                     </div>
                 </v-col>
             </v-row>
@@ -107,6 +114,7 @@ export default {
     },
     data() {
         return {
+            periodText: null,
             startDate: {
                 dateMenu: false,
                 date: null
@@ -122,11 +130,6 @@ export default {
     computed: {
         stockValue() {
             const data = this.filteredData()
-
-            console.log('startDate', this.startDate.date)
-            console.log('endDate', this.endDate.date)
-            console.log('data', data)
-
             if (!Array.isArray(data) || data.length === 0) return []
             return data.map((v) => {
                 // const midpoint = (v.high + v.low) / 2 // Errechnet den Mittelpunkt vom Höchst-/Tiefstwert
@@ -156,12 +159,18 @@ export default {
             } else {
                 return { line: '#cc2929', bg: '#cc29291A' } // 'bg' ist 10% transparency
             }
+        },
+        performanceText() {
+            return `Last ${this.periodText} Performance`
         }
     },
     created() {
         // Setzt Start- / Enddatum
         this.startDate.date = moment(new Date()).subtract(1, 'years').format('YYYY-MM-DD')
         this.endDate.date = moment(new Date()).format('YYYY-MM-DD')
+
+        // Setzt Text Zeitraum
+        this.periodText = 'Year'
     },
     methods: {
         filteredData() {
@@ -175,6 +184,30 @@ export default {
             return data.filter((eod) => {
                 return moment(eod?.date).isBetween(startDate, endDate, undefined, '[]')
             })
+        },
+        changeDate(quantity, type) {
+            // Setzt Start- / Enddatum
+            this.startDate.date = moment(new Date()).subtract(quantity, type).format('YYYY-MM-DD')
+            this.endDate.date = moment(new Date()).format('YYYY-MM-DD')
+
+            // Ändert Text Zeitraum
+            switch (type) {
+                case 'week':
+                    this.periodText = 'Week'
+                    break
+
+                case 'months':
+                    this.periodText = quantity > 1 ? `${quantity} Months` : 'Month'
+                    break
+
+                case 'years':
+                    this.periodText = 'Year'
+                    break
+
+                default:
+                    this.periodText = 'Year'
+                    break
+            }
         }
     }
 }
