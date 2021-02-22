@@ -90,6 +90,9 @@ export default {
     },
     methods: {
         buildChart() {
+            // Erstellt ein Array mit gleicher Länge wie dem Data Array, jedoch NUR bestehen aus dem Anfangswert
+            const lineData = this.createSingleLineData(this.data)
+
             // Render Function gewrapped, damit sie immer wieder genutzt werden kann (zum Rerendern)
             this.renderChart({
                 labels: this.chartLabels,
@@ -102,9 +105,27 @@ export default {
                         pointBorderColor: 'transparent',
                         backgroundColor: this.bgColor,
                         data: this.data
+                    },
+                    {
+                        label: 'opening',
+                        borderColor: this.lineColor,
+                        borderWidth: 1,
+                        borderDash: [10, 5],
+                        pointBackgroundColor: 'transparent',
+                        pointBorderColor: 'transparent',
+                        fill: false,
+                        data: lineData
                     }
                 ]
             }, this.options)
+        },
+        createSingleLineData(data) {
+            // Erstellt ein Array mit gleicher Länge wie dem Data Array, jedoch NUR bestehen aus dem Anfangswert
+            if (!data || !Array.isArray(data) || data.length === 0) return []
+            const openingValue = data[0]
+            return data.map(() => {
+                return openingValue
+            })
         }
     }
 }
