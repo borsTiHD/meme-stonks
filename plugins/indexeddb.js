@@ -23,10 +23,9 @@ class IndexedDb {
      * @return  {object}    -> Returned Datenbank Verbindungen
      */
     async init() {
-        const idb = {
+        return {
             userSettings: await this.initUserSettings(1)
         }
-        return idb
     }
 
     /**
