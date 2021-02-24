@@ -1,5 +1,6 @@
 // Error Message bei fehlendem API Key
 const MISSING_API_KEY = 'No Api Token found. Please go to settings and set an Api Token (Marketstack.com).'
+const MISSING_STOCK = 'No Stock Selected. Please select a stock in the upper search field.'
 
 export default ({ app, isDev }, inject) => {
     const apiCalls = {
@@ -152,7 +153,7 @@ export default ({ app, isDev }, inject) => {
 
                 // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
                 if (!currentStock) {
-                    return reject(new Error('No Stock Selected. Please select a stock in the upper search field.'))
+                    return reject(new Error(MISSING_STOCK))
                 }
 
                 // Gibt es bereits Stock Data, wird nicht gefetcht
