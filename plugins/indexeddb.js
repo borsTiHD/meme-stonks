@@ -38,7 +38,7 @@ class IndexedDb {
             upgrade: async(db, oldVersion, newVersion, transaction) => {
                 switch (oldVersion) {
                     case 0:
-                        upgradeDB3fromV0toV1()
+                        upgradeV0toV1()
                         break // break entfernen wenn weitere Upgrades hinzukommen
                         // falls through
                     /*
@@ -54,7 +54,7 @@ class IndexedDb {
                 }
 
                 // Erstellt Datenbank Struktur
-                function upgradeDB3fromV0toV1() {
+                function upgradeV0toV1() {
                     // User Einstellungen
                     db.createObjectStore('preference')
                     transaction.objectStore('preference').put(true, 'darkMode')
