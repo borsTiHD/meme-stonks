@@ -23,15 +23,19 @@ class IndexedDb {
      * @return  {object}    -> Returned Datenbank Verbindungen
      */
     async init() {
-        return {
-            userSettings: await this.initUserSettings(1)
-        }
+        return [
+            {
+                name: 'userSettings',
+                db: await this.initUserSettings(1)
+            }
+        ]
     }
 
     /**
      * initUserSettings() - Initiiert UserSettings
      * @access  private
-     * @return  {object}    -> Returned Datenbank
+     * @param   {number}    version     -> Aktuelle Version, mit der die DB initialisiert werden soll
+     * @return  {object}                -> Returned Datenbank
      */
     async initUserSettings(version) {
         return await openDB('userSettings', version, {
@@ -85,6 +89,18 @@ class IndexedDb {
                 */
             }
         })
+    }
+
+    /**
+     * getDb() - Sucht Datenbank Object by Name
+     * @param   {string}    name    -> Name der DB die gesucht werden soll
+     * @return  {object}            -> Returned Datenbank Verbindungen
+     */
+    getDb(name) {
+        // Wird kein parameter zur Suche angegeben, werden ALLE Datenbanken zurückgegeben
+        if (!name) return this.idb
+        // Liefert das erste mit gleichen Namen, oder Symbol gefundene StockData Objekt zurück
+        return this.idb.find((dbs) => dbs.name === name)
     }
 }
 
