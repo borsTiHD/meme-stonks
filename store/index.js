@@ -51,8 +51,5 @@ export const getters = {
     },
     getStockApiToken: (state) => {
         return state.marketstack.stockApiToken
-    },
-    getRapidBaseUrl: (state) => {
-        return state.rapidApi.rapidBaseUrl
     }
 }
