@@ -9,7 +9,7 @@ export default ({ app, isDev }, inject) => {
          * @returns     {string|boolean}    -> API Key, oder false
          */
         getStockApiKey() {
-            const stockApiToken = app.store.getters.getStockApiToken
+            const stockApiToken = app.store.getters['tokens/getStockApiToken']
             if (!stockApiToken || stockApiToken === 'null' || stockApiToken === 'undefined' || stockApiToken === '') {
                 return false
             }
@@ -44,7 +44,7 @@ export default ({ app, isDev }, inject) => {
                 }
 
                 // Ermittelt Alle Exchanges
-                const baseUrl = app.store.getters.getStockBaseUrl
+                const baseUrl = app.store.getters['tokens/getStockBaseUrl']
                 const url = `${baseUrl}/exchanges`
                 app.$axios.get(url, { params })
                     .then((response) => {
@@ -101,7 +101,7 @@ export default ({ app, isDev }, inject) => {
                 }
 
                 // Ermittelt Verfügbare Stocks eines Exchanges
-                const baseUrl = app.store.getters.getStockBaseUrl
+                const baseUrl = app.store.getters['tokens/getStockBaseUrl']
                 const exchange = app.store.getters['stock/getExchange']
                 const url = `${baseUrl}/exchanges/${exchange?.mic}/tickers`
 
@@ -177,7 +177,7 @@ export default ({ app, isDev }, inject) => {
 
                 // Ermittelt Stock Daten
                 const symbol = currentStock.symbol
-                const baseUrl = app.store.getters.getStockBaseUrl
+                const baseUrl = app.store.getters['tokens/getStockBaseUrl']
                 const url = `${baseUrl}/tickers/${symbol}/eod`
                 app.$axios.get(url, { params })
                     .then((res) => {

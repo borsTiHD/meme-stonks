@@ -41,7 +41,7 @@ export default {
     },
     computed: {
         ...mapGetters({
-            getStockApiToken: 'getStockApiToken',
+            getStockApiToken: 'tokens/getStockApiToken',
             getExchange: 'stock/getExchange'
         })
     },
@@ -90,8 +90,8 @@ export default {
     },
     methods: {
         ...mapActions({
-            setStockApiToken: 'setStockApiToken',
-            setStockApiTokenPremium: 'setStockApiTokenPremium'
+            setStockApiToken: 'tokens/setStockApiToken',
+            setStockApiTokenPremium: 'tokens/setStockApiTokenPremium'
         }),
         async fetchData() {
             this.loadingExchanges = true

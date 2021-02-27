@@ -240,12 +240,12 @@ export default {
     },
     methods: {
         ...mapGetters({
-            getStockApiToken: 'getStockApiToken',
-            getStockApiTokenPremium: 'getStockApiTokenPremium'
+            getStockApiToken: 'tokens/getStockApiToken',
+            getStockApiTokenPremium: 'tokens/getStockApiTokenPremium'
         }),
         ...mapActions({
-            setStockApiToken: 'setStockApiToken',
-            setStockApiTokenPremium: 'setStockApiTokenPremium',
+            setStockApiToken: 'tokens/setStockApiToken',
+            setStockApiTokenPremium: 'tokens/setStockApiTokenPremium',
             setExchange: 'stock/setExchange'
         }),
         loadData() {

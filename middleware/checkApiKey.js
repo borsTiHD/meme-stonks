@@ -1,7 +1,7 @@
 export default function(app) {
     if (process.client) {
         // Wenn der API Key nicht vorhanden ist, wird der User zur Settings Page geleitet
-        const apiToken = app.store.getters.getStockApiToken
+        const apiToken = app.store.getters['tokens/getStockApiToken']
         if (!apiToken || apiToken === 'undefined' || apiToken === 'null' || apiToken === '') {
             console.log('[Middleware] >> API Key is NOT available:', apiToken)
 
