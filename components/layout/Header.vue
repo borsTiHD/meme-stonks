@@ -93,12 +93,6 @@ export default {
             setRightDrawer: 'layout/setRightDrawer',
             setCurrentStock: 'stock/setCurrentStock'
         }),
-        loadData() {
-            // Setzt aktuelle Tokens in Inputfelder
-            this.stockApiToken = this.getStockApiToken()
-            this.stockApiPremiumCheckbox = this.getStockApiTokenPremium()
-            this.rapidApiToken = this.getRapidApiToken()
-        },
         stockFilter(item, queryText, itemText) {
             // Filtert welche Items im DropDown angezeigt werden sollen
             const name = item.name.toLowerCase()

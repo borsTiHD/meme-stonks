@@ -4,10 +4,6 @@ export const state = () => ({
         stockBaseUrl: 'api.marketstack.com/v1',
         stockApiToken: null,
         stockApiTokenPremium: false
-    },
-    rapidApi: {
-        rapidBaseUrl: 'bing-news-search1.p.rapidapi.com',
-        rapidApiToken: null
     }
 })
 
@@ -18,9 +14,6 @@ export const mutations = {
     },
     setStockApiTokenPremium: (state, payload) => {
         state.marketstack.stockApiTokenPremium = payload
-    },
-    setRapidApiToken: (state, payload) => {
-        state.rapidApi.rapidApiToken = payload
     }
 }
 
@@ -41,14 +34,6 @@ export const actions = {
             localStorage.setItem('stockApiTokenPremium', data)
         }
         vuexContext.commit('setStockApiTokenPremium', payload)
-    },
-    setRapidApiToken: (vuexContext, payload) => {
-        // Speichert auf Clientseite den Token zusätzlich im Localstorage
-        if (process.browser) {
-            const data = payload || ''
-            localStorage.setItem('rapidApiToken', data)
-        }
-        vuexContext.commit('setRapidApiToken', payload)
     }
 }
 
@@ -69,8 +54,5 @@ export const getters = {
     },
     getRapidBaseUrl: (state) => {
         return state.rapidApi.rapidBaseUrl
-    },
-    getRapidApiToken: (state) => {
-        return state.rapidApi.rapidApiToken
     }
 }

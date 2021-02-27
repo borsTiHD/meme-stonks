@@ -33,21 +33,6 @@
                                 </v-tooltip>
                             </v-col>
                         </v-row>
-                        <v-row>
-                            <v-col cols="12" md="4">
-                                <v-subheader>Rakuten Rapid API</v-subheader>
-                            </v-col>
-                            <v-col cols="12" md="8">
-                                <v-text-field
-                                    v-model="rapidApiToken"
-                                    label="english.api.rakuten.net Api Key"
-                                    hide-details="auto"
-                                    clearable
-                                    single-line
-                                    outlined
-                                />
-                            </v-col>
-                        </v-row>
                     </v-card-text>
 
                     <v-divider />
@@ -130,7 +115,6 @@ export default {
         return {
             stockApiToken: '',
             stockApiPremiumCheckbox: false,
-            rapidApiToken: '',
             exchange: '',
             snackbar: {
                 show: false,
@@ -170,25 +154,21 @@ export default {
     methods: {
         ...mapGetters({
             getStockApiToken: 'getStockApiToken',
-            getStockApiTokenPremium: 'getStockApiTokenPremium',
-            getRapidApiToken: 'getRapidApiToken'
+            getStockApiTokenPremium: 'getStockApiTokenPremium'
         }),
         ...mapActions({
             setStockApiToken: 'setStockApiToken',
             setStockApiTokenPremium: 'setStockApiTokenPremium',
-            setRapidApiToken: 'setRapidApiToken',
             setExchange: 'stock/setExchange'
         }),
         loadData() {
             // Setzt aktuelle Tokens in Inputfelder
             this.stockApiToken = this.getStockApiToken()
             this.stockApiPremiumCheckbox = this.getStockApiTokenPremium()
-            this.rapidApiToken = this.getRapidApiToken()
         },
         setTokens() {
             this.setStockApiToken(this.stockApiToken)
             this.setStockApiTokenPremium(this.stockApiPremiumCheckbox)
-            this.setRapidApiToken(this.rapidApiToken)
             this.snackbar.text = 'Set api keys...' // User Feedback
             this.snackbar.show = true // User Feedback
         },

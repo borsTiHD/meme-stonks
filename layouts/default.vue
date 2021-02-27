@@ -79,11 +79,6 @@ export default {
                 this.setStockApiTokenPremium(false)
             }
 
-            // Ermittelt Rapid Api Token aus LocalStorage und speichert im Store
-            if (localStorage.getItem('rapidApiToken')) {
-                this.setRapidApiToken(localStorage.getItem('rapidApiToken'))
-            }
-
             // Fetcht Daten -> werden auch über Watch gefetcht.
             // this.fetchData()
 
@@ -96,8 +91,7 @@ export default {
     methods: {
         ...mapActions({
             setStockApiToken: 'setStockApiToken',
-            setStockApiTokenPremium: 'setStockApiTokenPremium',
-            setRapidApiToken: 'setRapidApiToken'
+            setStockApiTokenPremium: 'setStockApiTokenPremium'
         }),
         async fetchData() {
             this.loadingExchanges = true
