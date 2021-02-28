@@ -130,7 +130,7 @@ class IndexedDb {
                 // Erstellt Datenbank Struktur
                 function upgradeV0toV1() {
                     // Exchanges
-                    db.createObjectStore('exchanges')
+                    db.createObjectStore('exchanges', { keyPath: 'mic' })
                 }
             }
         })
