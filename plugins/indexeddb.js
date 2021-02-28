@@ -10,7 +10,9 @@ class IndexedDb {
 
         // Error Messages
         this.err = {
-            DB_VERSION_UNKNOWN: 'Unknown DB Version'
+            DB_VERSION_UNKNOWN: 'Unknown DB Version',
+            DB_PUT_MISSING_PARAMETER: 'Missing or Empty Parameter',
+            DB_GET_MISSING_PARAMETER: 'Missing or Empty Parameter'
         }
 
         // iDB Instanzen
@@ -22,11 +24,11 @@ class IndexedDb {
      * @access  private
      * @return  {object}    -> Returned Datenbank Verbindungen
      */
-    async init() {
+    init() {
         return [
             {
                 name: 'userSettings',
-                db: await this.initUserSettings(1)
+                db: this.initUserSettings(1)
             }
         ]
     }
@@ -96,11 +98,54 @@ class IndexedDb {
      * @param   {string}    name    -> Name der DB die gesucht werden soll
      * @return  {object}            -> Returned Datenbank Verbindungen
      */
-    getDb(name) {
+    async getDb(name) {
         // Wird kein parameter zur Suche angegeben, werden ALLE Datenbanken zurückgegeben
         if (!name) return this.idb
         // Liefert das erste mit gleichen Namen, oder Symbol gefundene StockData Objekt zurück
-        return this.idb.find((dbs) => dbs.name === name)
+        const { db } = await this.idb.find((dbs) => dbs.name === name)
+        return db
+    }
+
+    /**
+     * putValue() - Setzt, oder ersetzt einen Wert in einer Datenbank
+     * @param   {string}    dbName      -> Name der DB die gesucht werden soll
+     * @param   {string}    storeName   -> Name des Stores, der verwendet werden soll
+     * @param   {string}    key         -> Key Name
+     * @param   {any}       value       -> Value, der gespeichert werden soll
+     */
+    putKeyValue(dbName, storeName, key, value) {
+        if (!dbName || !storeName || !key) {
+            return new Error(this.err.DB_PUT_MISSING_PARAMETER)
+        }
+
+        // Holt sich gewünschte DB und setzt anschließend Value
+        this.getDb(dbName).then((db) => {
+            db.put(storeName, value, key)
+        })
+    }
+
+    /**
+     * getKeyValue() - Holt einen Wert aus einer Datenbank
+     * @param   {string}    dbName      -> Name der DB die gesucht werden soll
+     * @param   {string}    storeName   -> Name des Stores, der verwendet werden soll
+     * @param   {string}    key         -> Key Name
+     * @return  {any}                   -> Returned gespeicherten Wert
+     */
+    async getKeyValue(dbName, storeName, key) {
+        if (!dbName || !storeName || !key) {
+            return new Error(this.err.DB_GET_MISSING_PARAMETER)
+        }
+
+        return new Promise((resolve, reject) => {
+            // Holt sich gewünschte DB und setzt anschließend Value
+            this.getDb(dbName).then((db) => {
+                db.get(storeName, key).then((res) => {
+                    return resolve(res)
+                }).catch((err) => {
+                    return reject(err)
+                })
+            })
+        })
     }
 }
 

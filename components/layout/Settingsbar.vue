@@ -51,9 +51,12 @@ export default {
             setRightDrawer: 'layout/setRightDrawer'
         }),
         changeDarkMode() {
+            console.log('clicked')
             if (this.darkMode) {
+                this.$idb.putKeyValue('userSettings', 'preference', 'darkMode', false)
                 this.$vuetify.theme.dark = false
             } else {
+                this.$idb.putKeyValue('userSettings', 'preference', 'darkMode', true)
                 this.$vuetify.theme.dark = true
             }
         }

@@ -63,9 +63,14 @@ export default {
             this.loadingStocks = false
         }
     },
-    created() {
-        // Client Side
+    async created() {
+        // Client Side Init
+        // Lädt ggf. gespeicherte Daten
         if (process.client) {
+            // Ermittelt DarkMode aus Settings und setzt es
+            const darkMode = await this.$idb.getKeyValue('userSettings', 'preference', 'darkMode')
+            this.$vuetify.theme.dark = darkMode
+
             // Ermittelt Stock Api Token aus LocalStorage und speichert im Store
             if (localStorage.getItem('stockApiToken')) {
                 this.setStockApiToken(localStorage.getItem('stockApiToken'))
