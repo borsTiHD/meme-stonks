@@ -9,25 +9,25 @@ export const state = () => ({
 
 // Sync functions for setting data
 export const mutations = {
-    setExchange: (state, payload) => {
+    setExchange(state, payload) {
         state.currentExchange = payload
     },
-    setAllExchanges: (state, payload) => {
+    setAllExchanges(state, payload) {
         state.exchanges = payload
     },
-    setCurrentStock: (state, payload) => {
+    setCurrentStock(state, payload) {
         state.currentStock = payload
     },
-    clearStocks: (state) => {
+    clearStocks(state) {
         state.stocks = []
     },
-    setStocks: (state, payload) => {
+    setStocks(state, payload) {
         state.stocks = payload
     },
-    addStocks: (state, payload) => {
+    addStocks(state, payload) {
         state.stocks.push(...payload)
     },
-    addStockData: (state, payload) => {
+    addStockData(state, payload) {
         // NICHT diese Mutation ausführen, sondern die gleichnamige ACTION!!!
 
         // Fügt neue StockData hinzu, wenn sie noch nicht vorhanden ist
@@ -39,29 +39,29 @@ export const mutations = {
 
 // Async functions for setting data and calling mutations
 export const actions = {
-    setExchange: (vuexContext, payload) => {
+    setExchange({ commit }, payload) {
         // Speichert auf Clientseite die Börse zusätzlich im Localstorage
-        if (process.browser) {
+        if (process.client) {
             localStorage.setItem('currentExchange', JSON.stringify(payload))
         }
-        vuexContext.commit('setExchange', payload)
+        commit('setExchange', payload)
     },
-    setAllExchanges: (vuexContext, payload) => {
-        vuexContext.commit('setAllExchanges', payload)
+    setAllExchanges({ commit }, payload) {
+        commit('setAllExchanges', payload)
     },
-    setCurrentStock: (vuexContext, payload) => {
-        vuexContext.commit('setCurrentStock', payload)
+    setCurrentStock({ commit }, payload) {
+        commit('setCurrentStock', payload)
     },
-    clearStocks: (vuexContext) => {
-        vuexContext.commit('clearStocks')
+    clearStocks({ commit }) {
+        commit('clearStocks')
     },
-    setStocks: (vuexContext, payload) => {
-        vuexContext.commit('setStocks', payload)
+    setStocks({ commit }, payload) {
+        commit('setStocks', payload)
     },
-    addStocks: (vuexContext, payload) => {
-        vuexContext.commit('addStocks', payload)
+    addStocks({ commit }, payload) {
+        commit('addStocks', payload)
     },
-    addStockData: ({ commit, dispatch, state }, payload) => {
+    addStockData({ commit, dispatch, state }, payload) {
         // Prüft ob StockData bereits gespeichert wurde
         if (!state.stockData.find(({ name }) => name === payload.name)) {
             commit('addStockData', payload)
@@ -71,16 +71,16 @@ export const actions = {
 
 // Getting computed data
 export const getters = {
-    getExchange: (state) => {
+    getExchange(state) {
         return state.currentExchange
     },
-    getAllExchanges: (state) => {
+    getAllExchanges(state) {
         return state.exchanges
     },
-    getCurrentStock: (state) => {
+    getCurrentStock(state) {
         return state.currentStock
     },
-    getStocks: (state) => {
+    getStocks(state) {
         return state.stocks
     },
     getStockData: (state) => (name) => {

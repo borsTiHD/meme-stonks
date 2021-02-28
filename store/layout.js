@@ -6,30 +6,30 @@ export const state = () => ({
 
 // Sync functions for setting data
 export const mutations = {
-    setDrawer: (state, payload) => {
+    setDrawer(state, payload) {
         state.drawer = payload
     },
-    setRightDrawer: (state, payload) => {
+    setRightDrawer(state, payload) {
         state.rightDrawer = payload
     }
 }
 
 // Async functions for setting data and calling mutations
 export const actions = {
-    setDrawer: (vuexContext, payload) => {
-        vuexContext.commit('setDrawer', payload)
+    setDrawer({ commit }, payload) {
+        commit('setDrawer', payload)
     },
-    setRightDrawer: (vuexContext, payload) => {
-        vuexContext.commit('setRightDrawer', payload)
+    setRightDrawer({ commit }, payload) {
+        commit('setRightDrawer', payload)
     }
 }
 
 // Getting computed data
 export const getters = {
-    getDrawer: (state) => {
+    getDrawer(state) {
         return state.drawer
     },
-    getRightDrawer: (state) => {
+    getRightDrawer(state) {
         return state.rightDrawer
     }
 }
