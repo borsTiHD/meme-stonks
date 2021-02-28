@@ -45,6 +45,10 @@ class IndexedDb {
      */
     async initUserSettings(version) {
         return await openDB('userSettings', version, {
+            blocked: () => {
+                // seems an older version of this app is running in another tab
+                console.log('Please close this app opened in other browser tabs.')
+            },
             upgrade: async(db, oldVersion, newVersion, transaction) => {
                 switch (oldVersion) {
                     case 0:
@@ -97,6 +101,11 @@ class IndexedDb {
                     store.delete('useDarkMode')
                 }
                 */
+            },
+            blocking: () => {
+                // seems the user just opened this app again in a new tab
+                // which happens to have gotten a version change
+                console.log('App is outdated, please close this tab')
             }
         })
     }
@@ -109,6 +118,10 @@ class IndexedDb {
      */
     async initAppDb(version) {
         return await openDB('app', version, {
+            blocked: () => {
+                // seems an older version of this app is running in another tab
+                console.log('Please close this app opened in other browser tabs.')
+            },
             upgrade: async(db, oldVersion, newVersion, transaction) => {
                 switch (oldVersion) {
                     case 0:
@@ -132,6 +145,11 @@ class IndexedDb {
                     // Exchanges
                     db.createObjectStore('exchanges', { keyPath: 'mic' })
                 }
+            },
+            blocking: () => {
+                // seems the user just opened this app again in a new tab
+                // which happens to have gotten a version change
+                console.log('App is outdated, please close this tab')
             }
         })
     }
