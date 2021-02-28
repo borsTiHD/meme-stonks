@@ -1,4 +1,5 @@
 import { openDB } from 'idb'
+import moment from 'moment'
 
 /**
  * IndexedDb Class
@@ -17,6 +18,9 @@ class IndexedDb {
 
         // iDB Instanzen
         this.idb = this.init()
+
+        // Prüft ob vorhandene App Datenbank veraltet ist
+        this.checkAppDbOutdate()
     }
 
     /**
@@ -142,6 +146,10 @@ class IndexedDb {
 
                 // Erstellt Datenbank Struktur
                 function upgradeV0toV1() {
+                    // Created Date
+                    db.createObjectStore('created')
+                    transaction.objectStore('created').put(Date.now(), 'created')
+
                     // Exchanges
                     db.createObjectStore('exchanges', { keyPath: 'mic' })
                 }
@@ -152,6 +160,27 @@ class IndexedDb {
                 console.log('App is outdated, please close this tab')
             }
         })
+    }
+
+    /**
+     * checkAppDbOutdate() - Prüft ob Datenbank zu alt ist und löscht ggf. den Inhalt
+     */
+    async checkAppDbOutdate() {
+        const created = await this.getKeyValue('app', 'created', 'created')
+        const dateToCheck = moment(new Date()).subtract(7, 'days')
+        // const dateToCheck = moment(new Date()) // Um leeren der Stores zu testen
+        if (moment(created).isBefore(dateToCheck)) {
+            // Datenbank ist zu alt und wird zurückgesetzt
+            const db = await this.getDb('app')
+            const stores = ['exchanges'] // Definiert zu leerende Stores
+            for (const store of stores) {
+                console.log('Leert Store:', store)
+                db.clear(store)
+            }
+
+            // Setzt neues 'created' Datum
+            this.putKeyValue('app', 'created', 'created', Date.now())
+        }
     }
 
     /**
