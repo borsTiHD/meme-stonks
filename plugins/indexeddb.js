@@ -29,6 +29,10 @@ class IndexedDb {
             {
                 name: 'userSettings',
                 db: this.initUserSettings(1)
+            },
+            {
+                name: 'app',
+                db: this.initAppDb(1)
             }
         ]
     }
@@ -69,6 +73,10 @@ class IndexedDb {
                     db.createObjectStore('tokens')
                     transaction.objectStore('tokens').put(null, 'stockApiToken')
                     transaction.objectStore('tokens').put(null, 'stockApiTokenPremium')
+
+                    // User Exchange
+                    db.createObjectStore('selectedExchange')
+                    transaction.objectStore('selectedExchange').put(null, 'exchange')
                 }
 
                 /*
@@ -89,6 +97,41 @@ class IndexedDb {
                     store.delete('useDarkMode')
                 }
                 */
+            }
+        })
+    }
+
+    /**
+     * initAppDb() - Initiiert initAppDb
+     * @access  private
+     * @param   {number}    version     -> Aktuelle Version, mit der die DB initialisiert werden soll
+     * @return  {object}                -> Returned Datenbank
+     */
+    async initAppDb(version) {
+        return await openDB('app', version, {
+            upgrade: async(db, oldVersion, newVersion, transaction) => {
+                switch (oldVersion) {
+                    case 0:
+                        upgradeV0toV1()
+                        break // break entfernen wenn weitere Upgrades hinzukommen
+                        // falls through
+                    /*
+                    case 1:
+                        upgradeDB3fromV1toV2()
+                        // falls through
+                    case 2:
+                        await upgradeDB3fromV2toV3()
+                        break
+                    */
+                    default:
+                        console.error(this.err.DB_VERSION_UNKNOWN)
+                }
+
+                // Erstellt Datenbank Struktur
+                function upgradeV0toV1() {
+                    // Exchanges
+                    db.createObjectStore('exchanges')
+                }
             }
         })
     }

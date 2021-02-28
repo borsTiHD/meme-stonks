@@ -20,14 +20,14 @@ export const mutations = {
 // Async functions for setting data and calling mutations
 export const actions = {
     setStockApiToken({ commit }, payload) {
-        // Speichert auf Clientseite den Token zusätzlich im Localstorage
+        // Speichert auf Clientseite den Token in IndexedDb
         if (process.client) {
             this.$idb.putKeyValue('userSettings', 'tokens', 'stockApiToken', payload)
         }
         commit('setStockApiToken', payload)
     },
     setStockApiTokenPremium({ commit }, payload) {
-        // Speichert auf Clientseite den Token zusätzlich im Localstorage
+        // Speichert auf Clientseite den Token in IndexedDb
         if (process.client) {
             this.$idb.putKeyValue('userSettings', 'tokens', 'stockApiTokenPremium', payload)
         }

@@ -53,13 +53,15 @@ export default ({ app, isDev }, inject) => {
                         console.log('[App] -> All Exchanges:', data)
                         app.store.dispatch('stock/setAllExchanges', data) // Setzt Store
 
-                        // Setzt default Exchange falls vorhanden aus LocalStorage
-                        let defaultExchange = data.find((data) => data.acronym === 'XNYS') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse (Frankfurt), (XNYS) New York Stock Exchange, (XNAS) NASDAQ Stock Exchange
-                        if (process.client && localStorage.getItem('currentExchange')) {
-                            const localExchange = localStorage.getItem('currentExchange')
-                            defaultExchange = JSON.parse(localExchange)
+                        // Setzt default Exchange falls vorhanden aus IndexedDb
+                        // Ansonsten wird 'default' Exchange gesetzt
+                        if (process.client) {
+                            app.$idb.getKeyValue('userSettings', 'selectedExchange', 'exchange').then((res) => {
+                                let defaultExchange = data.find((data) => data.acronym === 'NYSE') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse (Frankfurt), (NYSE) New York Stock Exchange, (XNAS) NASDAQ Stock Exchange
+                                if (res !== undefined && res !== null && res !== '') { defaultExchange = res }
+                                app.store.dispatch('stock/setExchange', defaultExchange) // Setzt Store
+                            })
                         }
-                        app.store.dispatch('stock/setExchange', defaultExchange) // Setzt Store
                     }).catch((error) => {
                         console.log(error)
                         return reject(error)

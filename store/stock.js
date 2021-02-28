@@ -40,9 +40,9 @@ export const mutations = {
 // Async functions for setting data and calling mutations
 export const actions = {
     setExchange({ commit }, payload) {
-        // Speichert auf Clientseite die Börse zusätzlich im Localstorage
+        // Speichert auf Clientseite die Börse in IndexedDb
         if (process.client) {
-            localStorage.setItem('currentExchange', JSON.stringify(payload))
+            this.$idb.putKeyValue('userSettings', 'selectedExchange', 'exchange', payload)
         }
         commit('setExchange', payload)
     },
