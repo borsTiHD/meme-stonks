@@ -9,47 +9,45 @@ export const state = () => ({
 
 // Sync functions for setting data
 export const mutations = {
-    setStockApiToken: (state, payload) => {
+    setStockApiToken(state, payload) {
         state.marketstack.stockApiToken = payload
     },
-    setStockApiTokenPremium: (state, payload) => {
+    setStockApiTokenPremium(state, payload) {
         state.marketstack.stockApiTokenPremium = payload
     }
 }
 
 // Async functions for setting data and calling mutations
 export const actions = {
-    setStockApiToken: (vuexContext, payload) => {
+    setStockApiToken({ commit }, payload) {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
-        if (process.browser) {
-            const data = payload || ''
-            localStorage.setItem('stockApiToken', data)
+        if (process.client) {
+            this.$idb.putKeyValue('userSettings', 'tokens', 'stockApiToken', payload)
         }
-        vuexContext.commit('tokens/setStockApiToken', payload)
+        commit('setStockApiToken', payload)
     },
-    setStockApiTokenPremium: (vuexContext, payload) => {
+    setStockApiTokenPremium({ commit }, payload) {
         // Speichert auf Clientseite den Token zusätzlich im Localstorage
-        if (process.browser) {
-            const data = payload || 'false'
-            localStorage.setItem('stockApiTokenPremium', data)
+        if (process.client) {
+            this.$idb.putKeyValue('userSettings', 'tokens', 'stockApiTokenPremium', payload)
         }
-        vuexContext.commit('tokens/setStockApiTokenPremium', payload)
+        commit('setStockApiTokenPremium', payload)
     }
 }
 
 // Getting computed data
 export const getters = {
-    getStockBaseUrl: (state) => {
+    getStockBaseUrl(state) {
         if (state.marketstack.stockApiTokenPremium) {
             return `https://${state.marketstack.stockBaseUrl}`
         } else {
             return `http://${state.marketstack.stockBaseUrl}`
         }
     },
-    getStockApiTokenPremium: (state) => {
+    getStockApiTokenPremium(state) {
         return state.marketstack.stockApiTokenPremium
     },
-    getStockApiToken: (state) => {
+    getStockApiToken(state) {
         return state.marketstack.stockApiToken
     }
 }

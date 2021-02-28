@@ -71,18 +71,13 @@ export default {
             const darkMode = await this.$idb.getKeyValue('userSettings', 'preference', 'darkMode')
             this.$vuetify.theme.dark = darkMode
 
-            // Ermittelt Stock Api Token aus LocalStorage und speichert im Store
-            if (localStorage.getItem('stockApiToken')) {
-                this.setStockApiToken(localStorage.getItem('stockApiToken'))
-            }
+            // Ermittelt Stock Api Token aus IndexedDb und speichert im Store
+            const stockToken = await this.$idb.getKeyValue('userSettings', 'tokens', 'stockApiToken')
+            this.setStockApiToken(stockToken)
 
             // Ermittelt Stock Token Premium State
-            const premiumCheck = localStorage.getItem('stockApiTokenPremium')
-            if (premiumCheck === 'true') {
-                this.setStockApiTokenPremium(true)
-            } else if (premiumCheck === 'false') {
-                this.setStockApiTokenPremium(false)
-            }
+            const stockTokenPremium = await this.$idb.getKeyValue('userSettings', 'tokens', 'stockApiTokenPremium')
+            this.setStockApiTokenPremium(stockTokenPremium)
 
             // Fetcht Daten -> werden auch über Watch gefetcht.
             // this.fetchData()
