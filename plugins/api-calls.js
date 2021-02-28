@@ -19,7 +19,34 @@ export default ({ app, isDev }, inject) => {
         /**
          * fetchExchanges() : Fetcht verfügbare Börsen
          */
-        fetchExchanges() {
+        async fetchExchanges() {
+            const setDefault = (exchanges) => {
+                // Setzt default Exchange falls vorhanden aus IndexedDb
+                // Ansonsten wird 'default' Exchange gesetzt
+                app.$idb.getKeyValue('userSettings', 'selectedExchange', 'exchange').then((res) => {
+                    let defaultExchange = exchanges.find((data) => data.acronym === 'NYSE') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse (Frankfurt), (NYSE) New York Stock Exchange, (XNAS) NASDAQ Stock Exchange
+                    if (res !== undefined && res !== null && res !== '') { defaultExchange = res }
+                    app.store.dispatch('stock/setExchange', defaultExchange) // Setzt Store
+                })
+            }
+
+            // Prüft IndexedDb nach gespeicherten Daten
+            const db = await app.$idb.getDb('app')
+            const result = await db.getAll('exchanges')
+
+            // Prüft DB Ergebnis und setzt in internen Store, sowie 'default' Exchange
+            if (Array.isArray(result) && result.length > 0) {
+                console.log('[App] -> Gespeicherte Exchange Daten aus IndexedDb:', result)
+                app.store.dispatch('stock/setAllExchanges', result) // Setzt Store
+
+                // Setzt Default Exchange
+                setDefault(result)
+
+                // Return, damit kein Fetching stattfindet
+                return true
+            }
+
+            // Gibt es keine IndexedDb Einträge, werden Exchanges über API gefetched
             return new Promise((resolve, reject) => {
                 console.log('[App] -> Fetching Exchanges')
 
@@ -53,15 +80,8 @@ export default ({ app, isDev }, inject) => {
                         console.log('[App] -> All Exchanges:', data)
                         app.store.dispatch('stock/setAllExchanges', data) // Setzt Store
 
-                        // Setzt default Exchange falls vorhanden aus IndexedDb
-                        // Ansonsten wird 'default' Exchange gesetzt
-                        if (process.client) {
-                            app.$idb.getKeyValue('userSettings', 'selectedExchange', 'exchange').then((res) => {
-                                let defaultExchange = data.find((data) => data.acronym === 'NYSE') // (XSTU) Börse Stuttgart, (XFRA) Deutsche Börse (Frankfurt), (NYSE) New York Stock Exchange, (XNAS) NASDAQ Stock Exchange
-                                if (res !== undefined && res !== null && res !== '') { defaultExchange = res }
-                                app.store.dispatch('stock/setExchange', defaultExchange) // Setzt Store
-                            })
-                        }
+                        // Setzt Default Exchange
+                        setDefault(data)
                     }).catch((error) => {
                         console.log(error)
                         return reject(error)

@@ -46,8 +46,18 @@ export const actions = {
         }
         commit('setExchange', payload)
     },
-    setAllExchanges({ commit }, payload) {
+    async setAllExchanges({ commit }, payload) {
+        // Speichert im Store
         commit('setAllExchanges', payload)
+
+        // Speichert Exchanges in IndexedDb
+        if (Array.isArray(payload)) {
+            const db = await this.$idb.getDb('app')
+            const transaction = db.transaction('exchanges', 'readwrite')
+            payload.forEach((exchange) => {
+                transaction.objectStore('exchanges').add(exchange)
+            })
+        }
     },
     setCurrentStock({ commit }, payload) {
         commit('setCurrentStock', payload)
