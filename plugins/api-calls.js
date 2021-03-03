@@ -99,11 +99,13 @@ export default ({ app, isDev }, inject) => {
                 console.log('[App] -> Fetching Stocks')
 
                 // Ermittelt Daten
-                const stocks = app.store.getters['stock/getStocks']
+                const exchange = app.store.getters['stock/getExchange']
+                const stocks = app.store.getters['stock/getStocks'](exchange.mic)
                 const stockApiToken = this.getStockApiKey()
 
                 // Gibt es bereits Stocks, brauchen die nicht erneut gefetcht zu werden
-                if (Array.isArray(stocks && stocks.length > 0)) {
+                if (Array.isArray(stocks) && stocks.length > 0) {
+                    console.log('[App] -> Stocks already existing.')
                     return resolve(true)
                 }
 
@@ -113,7 +115,7 @@ export default ({ app, isDev }, inject) => {
                 }
 
                 // Leer Store bevor Stocks abgefragt werden um alte Stocks zu löschen
-                app.store.dispatch('stock/clearStocks')
+                // app.store.dispatch('stock/clearStocks')(exchange.mic)
 
                 // Parameter für API Call
                 const params = {
@@ -122,16 +124,15 @@ export default ({ app, isDev }, inject) => {
                     offset: 0
                 }
 
-                // Ermittelt Verfügbare Stocks eines Exchanges
+                // Ermittelt Verfügbare Stocks des aktuellen Exchanges
                 const baseUrl = app.store.getters['tokens/getStockBaseUrl']
-                const exchange = app.store.getters['stock/getExchange']
                 const url = `${baseUrl}/exchanges/${exchange?.mic}/tickers`
 
                 // Holt Stocks und ruft sich erneut auf, wenn Limit nicht erreicht wurde
                 const getStocks = (url, params) => {
                     app.$axios.get(url, { params })
                         .then((response) => {
-                            const data = response.data.data.tickers
+                            const data = response.data.data
                             const pagination = response.data.pagination
                             console.log('[App] -> Still Fetching Stocks > Pagination:', pagination)
 
@@ -141,8 +142,9 @@ export default ({ app, isDev }, inject) => {
 
                             // Prüft ob alle Stocks abgefragt wurden, wenn nicht, wird ein weiterer Call gestartet
                             const offset = pagination.offset += pagination.count // Setzt neuen Offset aus Anzahl an Ergebnissen des vorherigen Calls
-                            if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
-                                const stocks = app.store.getters['stock/getStocks']
+                            // if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
+                            if (offset >= pagination.total) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
+                                const stocks = app.store.getters['stock/getStocks'](data.mic) // Ermittelt aktuelle Stocks für den aktuellen Exchange
                                 console.log('[App] -> Stocks:', stocks)
                                 return resolve(true)
                             } else {

@@ -9,7 +9,7 @@
             v-model="selectedStock"
             :loading="fetching ? true : loading"
             :disabled="fetching"
-            :items="getStocks"
+            :items="getCurrentStocks"
             :filter="stockFilter"
             clearable
             class="mx-4"
@@ -60,7 +60,8 @@ export default {
             getDrawer: 'layout/getDrawer',
             getRightDrawer: 'layout/getRightDrawer',
             getCurrentStock: 'stock/getCurrentStock',
-            getStocks: 'stock/getStocks'
+            getStocks: 'stock/getStocks',
+            getExchange: 'stock/getExchange'
         }),
         drawer: {
             get() {
@@ -85,6 +86,14 @@ export default {
             set(value) {
                 this.setCurrentStock(value)
             }
+        },
+        getCurrentStocks() {
+            const exchange = this.getExchange
+            const stocks = this.getStocks(exchange?.mic)
+            if (stocks) {
+                return stocks
+            }
+            return []
         }
     },
     methods: {
@@ -95,10 +104,10 @@ export default {
         }),
         stockFilter(item, queryText, itemText) {
             // Filtert welche Items im DropDown angezeigt werden sollen
-            const name = item.name.toLowerCase()
-            const symbol = item.symbol.toLowerCase()
-            const search = queryText.toLowerCase()
-            return name.includes(search) || symbol.includes(search)
+            const name = item?.name?.toLowerCase()
+            const symbol = item?.symbol?.toLowerCase()
+            const search = queryText?.toLowerCase()
+            return name?.includes(search) || symbol?.includes(search)
         }
     }
 }

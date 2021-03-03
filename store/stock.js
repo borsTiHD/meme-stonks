@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 // Root Store
 export const state = () => ({
     currentExchange: null,
@@ -25,7 +27,17 @@ export const mutations = {
         state.stocks = payload
     },
     addStocks(state, payload) {
-        state.stocks.push(...payload)
+        // Prüft ob bereits ein Objekt im Store mit dem Exchange existiert
+        const index = state.stocks.findIndex(({ mic }) => mic === payload.mic)
+        if (index !== -1) {
+            // Index vorhanden -> Daten werden ergänzt
+            const stocks = state.stocks[index].tickers // Ermittelt vorhandene Stocks
+            stocks.push(...payload.tickers) // Neue Stocks werden dem Array hinzugefügt
+            Vue.set(state.stocks[index], 'tickers', stocks) // Setzt neues Stocks Array mit Vue.set, damit es reactive bleibt
+        } else {
+            // Neues Stocks Objekt wird hinzugefügt
+            state.stocks.push(payload)
+        }
     },
     addStockData(state, payload) {
         // NICHT diese Mutation ausführen, sondern die gleichnamige ACTION!!!
@@ -90,8 +102,12 @@ export const getters = {
     getCurrentStock(state) {
         return state.currentStock
     },
-    getStocks(state) {
-        return state.stocks
+    getStocks: (state) => (mic) => {
+        // Wird kein parameter zur Suche angegeben, werden ALLE Stocks zurückgegeben
+        if (!mic) return state.stocks
+        // Liefert Stocks Array mit gleichen Exchange zurück
+        const stockObj = state.stocks.find((data) => data.mic === mic)
+        return stockObj?.tickers
     },
     getStockData: (state) => (name) => {
         // Wird kein parameter zur Suche angegeben, werden ALLE StockDatas zurückgegeben
