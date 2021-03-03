@@ -152,6 +152,9 @@ class IndexedDb {
 
                     // Exchanges
                     db.createObjectStore('exchanges', { keyPath: 'mic' })
+
+                    // Exchanges
+                    db.createObjectStore('stocks', { keyPath: 'symbol' })
                 }
             },
             blocking: () => {

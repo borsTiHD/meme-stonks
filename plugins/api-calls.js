@@ -142,8 +142,8 @@ export default ({ app, isDev }, inject) => {
 
                             // Prüft ob alle Stocks abgefragt wurden, wenn nicht, wird ein weiterer Call gestartet
                             const offset = pagination.offset += pagination.count // Setzt neuen Offset aus Anzahl an Ergebnissen des vorherigen Calls
-                            // if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
-                            if (offset >= pagination.total) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
+                            if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
+                            // if (offset >= pagination.total) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
                                 const stocks = app.store.getters['stock/getStocks'](data.mic) // Ermittelt aktuelle Stocks für den aktuellen Exchange
                                 console.log('[App] -> Stocks:', stocks)
                                 return resolve(true)
