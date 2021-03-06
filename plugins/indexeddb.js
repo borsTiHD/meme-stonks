@@ -155,6 +155,8 @@ class IndexedDb {
 
                     // Exchanges
                     db.createObjectStore('stocks', { keyPath: 'symbol' })
+                    const stocksStore = transaction.objectStore('stocks')
+                    stocksStore.createIndex('micIndex', 'mic') // Erstellt eine Index DB mit 'mic' als Key
                 }
             },
             blocking: () => {
