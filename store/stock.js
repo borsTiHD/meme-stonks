@@ -80,8 +80,21 @@ export const actions = {
     setStocks({ commit }, payload) {
         commit('setStocks', payload)
     },
-    addStocks({ commit }, payload) {
+    async addStocks({ commit }, payload) {
         commit('addStocks', payload)
+
+        // Speichert Stocks in IndexedDb
+        if (Array.isArray(payload)) {
+            const db = await this.$idb.getDb('app')
+            const transaction = db.transaction('stocks', 'readwrite')
+            payload.tickers.forEach((ticker) => {
+                // Speichert Ticker/Stock mit 'mic' als zusätzlichen Key
+                transaction.objectStore('stocks').add({
+                    ...ticker,
+                    mic: payload.mic
+                })
+            })
+        }
     },
     addStockData({ commit, dispatch, state }, payload) {
         // Prüft ob StockData bereits gespeichert wurde
