@@ -36,7 +36,7 @@ export default ({ app, isDev }, inject) => {
 
             // Prüft DB Ergebnis und setzt in internen Store, sowie 'default' Exchange
             if (Array.isArray(result) && result.length > 0) {
-                console.log('[App] -> Saved Exchange Data from IndexedDb:', result)
+                console.log('[App] -> Loaded Exchange Data from IndexedDb:', result)
                 app.store.dispatch('stock/setAllExchanges', result) // Setzt Store
 
                 // Setzt Default Exchange
@@ -108,7 +108,7 @@ export default ({ app, isDev }, inject) => {
 
             // Prüft DB Ergebnis und setzt in internen Store, sowie 'default' Exchange
             if (Array.isArray(tickers) && tickers.length > 0) {
-                console.log('[App] -> Saved Stocks from IndexedDb:', tickers)
+                console.log('[App] -> Loaded Stocks from IndexedDb:', tickers)
                 // Fügt Stocks zum Store, damit Store funktioniert muss jedoch ein Object mit enthaltenen 'mic' Key und 'tickers' übergeben werden
                 app.store.dispatch('stock/addStocks', {
                     mic: exchange.mic,
@@ -167,8 +167,8 @@ export default ({ app, isDev }, inject) => {
 
                             // Prüft ob alle Stocks abgefragt wurden, wenn nicht, wird ein weiterer Call gestartet
                             const offset = pagination.offset += pagination.count // Setzt neuen Offset aus Anzahl an Ergebnissen des vorherigen Calls
-                            if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
-                            // if (offset >= pagination.total) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
+                            // if (offset >= pagination.total || isDev) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
+                            if (offset >= pagination.total) { // Im Dev Mode (context.isDev) werden NICHT alle Daten ebgefragt um Api Limit zu schonen
                                 const stocks = app.store.getters['stock/getStocks'](data.mic) // Ermittelt aktuelle Stocks für den aktuellen Exchange
                                 console.log('[App] -> Stocks:', stocks)
                                 return resolve(true)
