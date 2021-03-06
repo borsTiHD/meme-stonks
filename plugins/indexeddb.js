@@ -179,7 +179,7 @@ class IndexedDb {
             const db = await this.getDb('app')
             const stores = ['exchanges'] // Definiert zu leerende Stores
             for (const store of stores) {
-                console.log('Leert Store:', store)
+                console.log('[App] -> Store ist veraltet und wird geleert:', store)
                 db.clear(store)
             }
 
