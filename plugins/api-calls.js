@@ -36,7 +36,7 @@ export default ({ app, isDev }, inject) => {
 
             // Prüft DB Ergebnis und setzt in internen Store, sowie 'default' Exchange
             if (Array.isArray(result) && result.length > 0) {
-                console.log('[App] -> Gespeicherte Exchange Daten aus IndexedDb:', result)
+                console.log('[App] -> Saved Exchange Data from IndexedDb:', result)
                 app.store.dispatch('stock/setAllExchanges', result) // Setzt Store
 
                 // Setzt Default Exchange
@@ -94,7 +94,32 @@ export default ({ app, isDev }, inject) => {
         /**
          * fetchStocks() : Fetcht Stocks einer Börse
          */
-        fetchStocks() {
+        async fetchStocks() {
+            // Ermittelt Daten
+            const exchange = app.store.getters['stock/getExchange']
+
+            // Prüft IndexedDb nach gespeicherten Daten
+            const db = await app.$idb.getDb('app')
+            const transaction = db.transaction('stocks')
+            const micIndex = transaction.store.index('micIndex')
+
+            // Holt sich alle Stocks/Tickers mit derzeit gewählten Mic
+            const tickers = await micIndex.getAll(exchange.mic)
+
+            // Prüft DB Ergebnis und setzt in internen Store, sowie 'default' Exchange
+            if (Array.isArray(tickers) && tickers.length > 0) {
+                console.log('[App] -> Saved Stocks from IndexedDb:', tickers)
+                // Fügt Stocks zum Store, damit Store funktioniert muss jedoch ein Object mit enthaltenen 'mic' Key und 'tickers' übergeben werden
+                app.store.dispatch('stock/addStocks', {
+                    mic: exchange.mic,
+                    tickers
+                })
+                app.store.dispatch('stock/setCurrentStock', null) // Setzt aktive Aktie ggf. zurück
+
+                // Return, damit kein Fetching stattfindet
+                return true
+            }
+
             return new Promise((resolve, reject) => {
                 console.log('[App] -> Fetching Stocks')
 

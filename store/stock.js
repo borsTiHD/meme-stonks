@@ -86,7 +86,6 @@ export const actions = {
         // Speichert Stocks in IndexedDb
         const db = await this.$idb.getDb('app')
         const transaction = db.transaction('stocks', 'readwrite')
-        console.log('Transaction wird vorbereitet.', payload)
         payload.tickers.forEach((ticker) => {
             // Speichert Ticker/Stock mit 'mic' als zusätzlichen Key
             transaction.objectStore('stocks').add({
