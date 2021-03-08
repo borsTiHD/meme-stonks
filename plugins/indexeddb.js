@@ -19,8 +19,9 @@ class IndexedDb {
         // iDB Instanzen
         this.idb = this.init()
 
-        // Prüft ob vorhandene App Datenbank veraltet ist
+        // Prüft ob veraltete Daten geleert werden müssen
         this.checkAppDbOutdate()
+        this.checkStockDataEodOutdate()
     }
 
     /**
@@ -149,14 +150,18 @@ class IndexedDb {
                     // Created Date
                     db.createObjectStore('created')
                     transaction.objectStore('created').put(Date.now(), 'created')
+                    transaction.objectStore('created').put(Date.now(), 'stockDataEod')
 
                     // Exchanges
                     db.createObjectStore('exchanges', { keyPath: 'mic' })
 
-                    // Exchanges
+                    // Stocks
                     db.createObjectStore('stocks', { keyPath: 'symbol' })
                     const stocksStore = transaction.objectStore('stocks')
                     stocksStore.createIndex('micIndex', 'mic') // Erstellt eine Index DB mit 'mic' als Key
+
+                    // Stock Data
+                    db.createObjectStore('stockDataEod', { keyPath: 'symbol' })
                 }
             },
             blocking: () => {
@@ -177,7 +182,7 @@ class IndexedDb {
         if (moment(created).isBefore(dateToCheck)) {
             // Datenbank ist zu alt und wird zurückgesetzt
             const db = await this.getDb('app')
-            const stores = ['exchanges'] // Definiert zu leerende Stores
+            const stores = ['exchanges', 'stocks'] // Definiert zu leerende Stores
             for (const store of stores) {
                 console.log('[App] -> Store ist veraltet und wird geleert:', store)
                 db.clear(store)
@@ -185,6 +190,26 @@ class IndexedDb {
 
             // Setzt neues 'created' Datum
             this.putKeyValue('app', 'created', 'created', Date.now())
+        }
+    }
+
+    /**
+     * checkStockDataEodOutdate() - StockData EoD wird nur für einen Tag gespeichert und anschließend gelöscht
+     */
+    async checkStockDataEodOutdate() {
+        const created = await this.getKeyValue('app', 'created', 'stockDataEod')
+        const dateToCheck = moment(new Date())
+        if (!moment(created).isSame(dateToCheck, 'day')) {
+            // Datenbank ist zu alt und wird zurückgesetzt
+            const db = await this.getDb('app')
+            const stores = ['stockDataEod'] // Definiert zu leerende Stores
+            for (const store of stores) {
+                console.log('[App] -> Store ist veraltet und wird geleert:', store)
+                db.clear(store)
+            }
+
+            // Setzt neues 'created' Datum
+            this.putKeyValue('app', 'created', 'stockDataEod', Date.now())
         }
     }
 
