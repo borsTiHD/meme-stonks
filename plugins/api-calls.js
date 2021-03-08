@@ -191,7 +191,35 @@ export default ({ app, isDev }, inject) => {
         /**
          * fetchStockData() : Fetcht Stock Details + End of Day Data
          */
-        fetchStockData() {
+        async fetchStockData() {
+            // Ermittelt Daten
+            const currentStock = app.store.getters['stock/getCurrentStock']
+
+            // Fetcht keine Daten, wenn keine Aktie ausgewählt wurde
+            if (!currentStock) {
+                return new Error(MISSING_STOCK)
+            }
+
+            // Gibt es bereits Stock Data, wird nicht gefetcht
+            const stockData = app.store.getters['stock/getStockData'](currentStock?.symbol)
+            if (stockData) {
+                return true
+            }
+
+            // Prüft IndexedDb nach gespeicherten Daten
+            const db = await app.$idb.getDb('app')
+            const stockDataDb = await db.get('stockDataEod', currentStock?.symbol)
+
+            console.log('stockDataDb:', stockDataDb)
+
+            // Wurde StockData in IndexedDB gefunden, werden die Daten im Store gespeichert und fetching beendet
+            if (stockDataDb) {
+                console.log('[APP] -> Loaded Stock EoD Data from IndexedDB:', stockDataDb)
+                app.store.dispatch('stock/addStockData', stockDataDb) // Store
+                return true
+            }
+
+            // Startet Fetching Prozess über API Call
             return new Promise((resolve, reject) => {
                 console.log('[App] -> Fetching Stock Data')
 
@@ -206,7 +234,7 @@ export default ({ app, isDev }, inject) => {
                 }
 
                 // Gibt es bereits Stock Data, wird nicht gefetcht
-                const stockData = app.store.getters['stock/getStockData'](currentStock?.name)
+                const stockData = app.store.getters['stock/getStockData'](currentStock?.symbol)
                 if (stockData) {
                     return resolve(true)
                 }

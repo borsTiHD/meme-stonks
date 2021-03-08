@@ -43,7 +43,7 @@ export const mutations = {
         // NICHT diese Mutation ausführen, sondern die gleichnamige ACTION!!!
 
         // Fügt neue StockData hinzu, wenn sie noch nicht vorhanden ist
-        if (!state.stockData.find(({ name }) => name === payload.name)) {
+        if (!state.stockData.find(({ symbol }) => symbol === payload.symbol)) {
             state.stockData.push(payload)
         }
     }
@@ -94,10 +94,16 @@ export const actions = {
             })
         })
     },
-    addStockData({ commit, dispatch, state }, payload) {
+    async addStockData({ commit, state }, payload) {
         // Prüft ob StockData bereits gespeichert wurde
-        if (!state.stockData.find(({ name }) => name === payload.name)) {
+        if (!state.stockData.find(({ symbol }) => symbol === payload.symbol)) {
+            // Speichert im Store
             commit('addStockData', payload)
+
+            // Speichert in IndexedDb
+            const db = await this.$idb.getDb('app')
+            const transaction = db.transaction('stockDataEod', 'readwrite')
+            transaction.objectStore('stockDataEod').add(payload)
         }
     }
 }
@@ -120,10 +126,10 @@ export const getters = {
         const stockObj = state.stocks.find((data) => data.mic === mic)
         return stockObj?.tickers
     },
-    getStockData: (state) => (name) => {
+    getStockData: (state) => (symbol) => {
         // Wird kein parameter zur Suche angegeben, werden ALLE StockDatas zurückgegeben
-        if (!name) return state.stockData
+        if (!symbol) return state.stockData
         // Liefert das erste mit gleichen Namen, oder Symbol gefundene StockData Objekt zurück
-        return state.stockData.find((data) => data.name === name || data.symbol === name)
+        return state.stockData.find((data) => data.name === symbol || data.symbol === symbol)
     }
 }

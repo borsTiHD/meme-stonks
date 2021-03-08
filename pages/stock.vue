@@ -53,7 +53,7 @@ export default {
             if (!this.getCurrentStock) {
                 return {}
             }
-            return this.getStockData(this.getCurrentStock.name)
+            return this.getStockData(this.getCurrentStock.symbol)
         }
     },
     watch: {
