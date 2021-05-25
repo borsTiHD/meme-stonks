@@ -30,7 +30,7 @@
     "eslint": "^7.26.0",
     "eslint-plugin-nuxt": "^2.0.0",
     "eslint-plugin-vue": "^7.9.0",
-    "idb": "^6.0.0",
+    "idb": "^6.1.1",
     "moment": "^2.29.1",
     "push-dir": "^0.4.1",
     "vue-chartjs": "^3.5.1"
