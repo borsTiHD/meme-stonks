@@ -1,4 +1,5 @@
 # meme-stonks
+** Project put on hold **
 
 ## Build Setup
 
